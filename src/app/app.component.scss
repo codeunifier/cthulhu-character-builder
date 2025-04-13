@@ -2,6 +2,13 @@
   flex: 1 1 auto;
 }
 
+.app-title {
+  font-family: 'Cthulhumbus', serif;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
 .main-container {
   display: flex;
   flex-direction: column;

@@ -19,6 +19,14 @@ body {
   color: #333;
 }
 
+h1.section-title {
+  font-family: 'CthulhumbusUG', serif;
+  font-size: 2.2rem;
+  color: #512da8;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+
 .form-field-full-width {
   width: 100%;
 }
@@ -72,4 +80,18 @@ body {
 
 .form-column {
   flex: 1;
+}
+
+@font-face {
+  font-family: "Cthulhumbus";
+  src: url('./assets/fonts/JMH Cthulhumbus.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "CthulhumbusUG";
+  src: url('./assets/fonts/JMH Cthulhumbus UG.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
