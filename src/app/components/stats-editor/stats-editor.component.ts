@@ -38,6 +38,12 @@ export class StatsEditorComponent implements OnInit {
   character: Character | null = null;
   pendingDeduction: PendingDeduction | null = null;
   
+  // Derived attributes
+  derivedHP: number = 0;
+  derivedDamageBonus: string = 'None';
+  derivedBuild: number = 0;
+  derivedMovementRate: number = 8;
+  
   ageRanges = [
     { label: '15-19 (Young)', value: 17 },
     { label: '20-39 (Adult)', value: 30 },
@@ -84,10 +90,109 @@ export class StatsEditorComponent implements OnInit {
       edu: [this.character.edu, [Validators.required, Validators.min(40), Validators.max(90)]],
       luck: [this.character.luck, [Validators.required, Validators.min(15), Validators.max(90)]]
     });
+    
+    // Update derived attributes based on initial values
+    this.recalculateDerivedAttributes();
+    
+    // Subscribe to form value changes to update derived attributes
+    this.statsForm.valueChanges.subscribe(() => {
+      this.recalculateDerivedAttributes();
+    });
+  }
+  
+  recalculateDerivedAttributes(): void {
+    if (!this.statsForm) return;
+    
+    const formValues = this.statsForm.value;
+    
+    // Ensure we have valid numeric values to work with
+    const str = Number(formValues.str) || 0;
+    const con = Number(formValues.con) || 0;
+    const siz = Number(formValues.siz) || 0;
+    const dex = Number(formValues.dex) || 0;
+    const age = Number(formValues.age) || 20;
+    
+    // Calculate Hit Points
+    this.derivedHP = Math.floor((con + siz) / 10);
+    
+    // Calculate Damage Bonus and Build
+    const sum = str + siz;
+    if (sum >= 2 && sum <= 64) {
+      this.derivedDamageBonus = "-2";
+      this.derivedBuild = -2;
+    } 
+    else if (sum >= 65 && sum <= 84) {
+      this.derivedDamageBonus = "-1";
+      this.derivedBuild = -1;
+    } 
+    else if (sum >= 85 && sum <= 124) {
+      this.derivedDamageBonus = "None";
+      this.derivedBuild = 0;
+    } 
+    else if (sum >= 125 && sum <= 164) {
+      this.derivedDamageBonus = "+1d4";
+      this.derivedBuild = 1;
+    } 
+    else if (sum >= 165 && sum <= 204) {
+      this.derivedDamageBonus = "+1d6";
+      this.derivedBuild = 2;
+    } 
+    else if (sum >= 205 && sum <= 284) {
+      this.derivedDamageBonus = "+2d6";
+      this.derivedBuild = 3;
+    } 
+    else if (sum >= 285 && sum <= 364) {
+      this.derivedDamageBonus = "+3d6";
+      this.derivedBuild = 4;
+    } 
+    else if (sum >= 365 && sum <= 444) {
+      this.derivedDamageBonus = "+4d6";
+      this.derivedBuild = 5;
+    } 
+    else if (sum >= 445) {
+      // Calculate additional dice for very high values
+      const additionalDice = Math.floor((sum - 445) / 80) + 5;
+      this.derivedDamageBonus = `+${additionalDice}d6`;
+      this.derivedBuild = additionalDice;
+    }
+    
+    // Calculate Movement Rate
+    if (str < siz && dex < siz) {
+      this.derivedMovementRate = 7;
+    } 
+    else if ((str >= siz || dex >= siz) || 
+             (str === siz && dex === siz)) {
+      this.derivedMovementRate = 8;
+    } 
+    else if (str > siz && dex > siz) {
+      this.derivedMovementRate = 9;
+    }
+    
+    // Apply age modifiers to movement rate
+    if (age >= 40 && age <= 49) {
+      this.derivedMovementRate -= 1;
+    } 
+    else if (age >= 50 && age <= 59) {
+      this.derivedMovementRate -= 2;
+    } 
+    else if (age >= 60 && age <= 69) {
+      this.derivedMovementRate -= 3;
+    } 
+    else if (age >= 70 && age <= 79) {
+      this.derivedMovementRate -= 4;
+    } 
+    else if (age >= 80) {
+      this.derivedMovementRate -= 5;
+    }
+    
+    // Ensure MOV doesn't go below 1
+    if (this.derivedMovementRate < 1) {
+      this.derivedMovementRate = 1;
+    }
   }
 
   rollStat(statName: string): void {
-    if (!this.character) return;
+    if (!this.character || !this.statsForm) return;
     
     let value: number;
     if (['siz', 'int', 'edu'].includes(statName)) {
@@ -97,6 +202,8 @@ export class StatsEditorComponent implements OnInit {
     }
     
     this.statsForm.get(statName)?.setValue(value);
+    // Note: No need to explicitly call recalculateDerivedAttributes() here
+    // as the form valueChanges subscription will handle that automatically
   }
 
   rollAllStats(): void {
@@ -123,6 +230,9 @@ export class StatsEditorComponent implements OnInit {
     
     this.statsForm.get('age')?.setValue(selectedAge);
     this.applyAgeEffects(selectedAge);
+    
+    // Ensure derived attributes are recalculated after age effects
+    this.recalculateDerivedAttributes();
   }
 
   applyAgeEffects(age: number): void {
@@ -159,6 +269,9 @@ export class StatsEditorComponent implements OnInit {
     
     // Update form with the new values
     this.statsForm.get(stat)?.setValue(this.character[stat as keyof Character]);
+    
+    // Recalculate derived attributes
+    this.recalculateDerivedAttributes();
   }
 
   updateCharacterFromForm(): void {
@@ -177,6 +290,12 @@ export class StatsEditorComponent implements OnInit {
     this.character.pow = formValues.pow;
     this.character.edu = formValues.edu;
     this.character.luck = formValues.luck;
+    
+    // Also update derived attributes directly from our calculated values
+    this.character.hp = this.derivedHP;
+    this.character.damageBonus = this.derivedDamageBonus;
+    this.character.build = this.derivedBuild;
+    this.character.mov = this.derivedMovementRate;
     
     this.characterService.updateCharacter(this.character);
   }

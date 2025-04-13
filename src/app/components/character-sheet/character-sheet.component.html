@@ -16,279 +16,498 @@
   </div>
   
   <div class="character-sheet">
+    <!-- Header Section -->
     <div class="sheet-header">
-      <h2 class="sheet-title">CALL OF CTHULHU</h2>
-      <h3 class="sheet-subtitle">Investigator Sheet</h3>
+      <div class="header-left">
+        <div class="coc-logo">CALL OF CTHULHU</div>
+        <div class="edition">7th Edition</div>
+      </div>
+      <div class="header-right">
+        <div class="sheet-title">INVESTIGATOR SHEET</div>
+      </div>
     </div>
     
-    <div class="basic-info">
+    <!-- Personal Information Section -->
+    <div class="personal-info">
       <div class="info-row">
-        <div class="info-item">
-          <label>Name:</label>
-          <span class="info-value">{{ character.name }}</span>
+        <div class="info-field name-field">
+          <div class="field-label">Name</div>
+          <div class="field-value">{{ character.name }}</div>
         </div>
-        <div class="info-item">
-          <label>Occupation:</label>
-          <span class="info-value">{{ character.occupation?.name }}</span>
+        <div class="info-field player-field">
+          <div class="field-label">Player</div>
+          <div class="field-value"></div>
         </div>
-        <div class="info-item">
-          <label>Age:</label>
-          <span class="info-value">{{ character.age }}</span>
+      </div>
+      
+      <div class="info-row">
+        <div class="info-field occupation-field">
+          <div class="field-label">Occupation</div>
+          <div class="field-value">{{ character.occupation?.name }}</div>
+        </div>
+        <div class="info-field age-field">
+          <div class="field-label">Age</div>
+          <div class="field-value">{{ character.age }}</div>
+        </div>
+        <div class="info-field gender-field">
+          <div class="field-label">Gender</div>
+          <div class="field-value"></div>
+        </div>
+        <div class="info-field residence-field">
+          <div class="field-label">Residence</div>
+          <div class="field-value"></div>
+        </div>
+        <div class="info-field birthplace-field">
+          <div class="field-label">Birthplace</div>
+          <div class="field-value"></div>
         </div>
       </div>
     </div>
     
-    <div class="sheet-section">
-      <h3 class="section-header">Characteristics</h3>
+    <!-- Characteristics Section -->
+    <div class="characteristics-section">
+      <div class="section-title">CHARACTERISTICS</div>
       
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-name">STR</div>
-          <div class="stat-value">{{ character.str }}</div>
-          <div class="stat-half">{{ Math.floor(character.str / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.str / 5) }}</div>
+      <div class="char-grid">
+        <!-- Row 1 -->
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">STR</div>
+            <div class="char-desc">Strength</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.str }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.str / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.str / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">CON</div>
-          <div class="stat-value">{{ character.con }}</div>
-          <div class="stat-half">{{ Math.floor(character.con / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.con / 5) }}</div>
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">CON</div>
+            <div class="char-desc">Constitution</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.con }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.con / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.con / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">SIZ</div>
-          <div class="stat-value">{{ character.siz }}</div>
-          <div class="stat-half">{{ Math.floor(character.siz / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.siz / 5) }}</div>
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">SIZ</div>
+            <div class="char-desc">Size</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.siz }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.siz / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.siz / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">DEX</div>
-          <div class="stat-value">{{ character.dex }}</div>
-          <div class="stat-half">{{ Math.floor(character.dex / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.dex / 5) }}</div>
+        <!-- Row 2 -->
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">DEX</div>
+            <div class="char-desc">Dexterity</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.dex }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.dex / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.dex / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">APP</div>
-          <div class="stat-value">{{ character.app }}</div>
-          <div class="stat-half">{{ Math.floor(character.app / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.app / 5) }}</div>
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">APP</div>
+            <div class="char-desc">Appearance</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.app }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.app / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.app / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">INT</div>
-          <div class="stat-value">{{ character.int }}</div>
-          <div class="stat-half">{{ Math.floor(character.int / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.int / 5) }}</div>
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">INT</div>
+            <div class="char-desc">Intelligence</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.int }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.int / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.int / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">POW</div>
-          <div class="stat-value">{{ character.pow }}</div>
-          <div class="stat-half">{{ Math.floor(character.pow / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.pow / 5) }}</div>
+        <!-- Row 3 -->
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">POW</div>
+            <div class="char-desc">Power</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.pow }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.pow / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.pow / 5) }}</div>
+            </div>
+          </div>
         </div>
         
-        <div class="stat-box">
-          <div class="stat-name">EDU</div>
-          <div class="stat-value">{{ character.edu }}</div>
-          <div class="stat-half">{{ Math.floor(character.edu / 2) }}</div>
-          <div class="stat-fifth">{{ Math.floor(character.edu / 5) }}</div>
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">EDU</div>
+            <div class="char-desc">Education</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.edu }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.edu / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.edu / 5) }}</div>
+            </div>
+          </div>
         </div>
+        
+        <div class="char-box">
+          <div class="char-header">
+            <div class="char-name">MOV</div>
+            <div class="char-desc">Move Rate</div>
+          </div>
+          <div class="char-values">
+            <div class="char-value">{{ character.mov }}</div>
+            <div class="char-derived-values">
+              <div class="char-half">{{ Math.floor(character.mov / 2) }}</div>
+              <div class="char-fifth">{{ Math.floor(character.mov / 5) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="char-key">
+        <div class="key-item">Regular</div>
+        <div class="key-item">Hard (½)</div>
+        <div class="key-item">Extreme (⅕)</div>
       </div>
     </div>
     
-    <div class="sheet-section">
-      <h3 class="section-header">Derived Attributes</h3>
+    <!-- Derived Attributes Section -->
+    <div class="derived-section">
+      <div class="derived-row">
+        <!-- HP Box -->
+        <div class="derived-box hp-box">
+          <div class="derived-title">Hit Points</div>
+          <div class="derived-circle">{{ character.hp }}</div>
+          <div class="number-track hp-track">
+            <span *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]" class="number-box" [class.filled]="character.hp >= i">
+              {{ i < 10 ? '0' + i : i }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Sanity Box -->
+        <div class="derived-box sanity-box">
+          <div class="derived-title">Sanity</div>
+          <div class="derived-circle">{{ character.pow }}</div>
+          <div class="number-track">
+            <div class="number-track-row">
+              <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="number-box" [class.filled]="character.pow >= i">{{ i < 10 ? '0' + i : i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [11,12,13,14,15,16,17,18,19,20]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [21,22,23,24,25,26,27,28,29,30]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [31,32,33,34,35,36,37,38,39,40]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [41,42,43,44,45,46,47,48,49,50]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [51,52,53,54,55,56,57,58,59,60]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [61,62,63,64,65,66,67,68,69,70]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [71,72,73,74,75,76,77,78,79,80]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [81,82,83,84,85,86,87,88,89,90]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [91,92,93,94,95,96,97,98,99]" class="number-box" [class.filled]="character.pow >= i">{{ i }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Luck Box -->
+        <div class="derived-box luck-box">
+          <div class="derived-title">Luck</div>
+          <div class="derived-circle">{{ character.luck }}</div>
+          <div class="number-track">
+            <div class="number-track-row">
+              <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" class="number-box" [class.filled]="character.luck >= i">{{ i < 10 ? '0' + i : i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [11,12,13,14,15,16,17,18,19,20]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [21,22,23,24,25,26,27,28,29,30]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [31,32,33,34,35,36,37,38,39,40]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [41,42,43,44,45,46,47,48,49,50]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [51,52,53,54,55,56,57,58,59,60]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [61,62,63,64,65,66,67,68,69,70]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [71,72,73,74,75,76,77,78,79,80]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [81,82,83,84,85,86,87,88,89,90]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+            <div class="number-track-row">
+              <span *ngFor="let i of [91,92,93,94,95,96,97,98,99]" class="number-box" [class.filled]="character.luck >= i">{{ i }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
       
-      <div class="derived-grid">
+      <div class="derived-row">
+        <!-- MP Box -->
+        <div class="derived-box mp-box">
+          <div class="derived-title">Magic Points</div>
+          <div class="derived-circle">{{ Math.floor(character.pow / 5) }}</div>
+          <div class="number-track mp-track">
+            <span *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]" 
+                  class="number-box" 
+                  [class.filled]="Math.floor(character.pow / 5) >= i">
+              {{ i < 10 ? '0' + i : i }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Build Box -->
+        <div class="derived-box build-box">
+          <div class="derived-title">Build</div>
+          <div class="derived-circle">{{ character.build }}</div>
+          <div class="derived-max"></div>
+        </div>
+        
+        <!-- Damage Bonus Box -->
         <div class="derived-box">
-          <div class="derived-name">Hit Points</div>
-          <div class="derived-value">{{ character.hp }}</div>
+          <div class="damage-title">Damage Bonus</div>
+          <div class="damage-value">{{ character.damageBonus }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Weapons & Combat -->
+    <div class="weapons-section">
+      <div class="section-title">COMBAT</div>
+      
+      <div class="weapons-table">
+        <div class="weapons-header">
+          <div class="weapon-cell weapon-name">Weapon</div>
+          <div class="weapon-cell weapon-regular">Regular</div>
+          <div class="weapon-cell weapon-hard">Hard</div>
+          <div class="weapon-cell weapon-extreme">Extreme</div>
+          <div class="weapon-cell weapon-damage">Damage</div>
+          <div class="weapon-cell weapon-range">Range</div>
+          <div class="weapon-cell weapon-attacks">Attacks</div>
+          <div class="weapon-cell weapon-ammo">Ammo</div>
+          <div class="weapon-cell weapon-malf">Malf</div>
         </div>
         
-        <div class="derived-box">
-          <div class="derived-name">Damage Bonus</div>
-          <div class="derived-value">{{ character.damageBonus }}</div>
+        <div class="weapon-row">
+          <div class="weapon-cell weapon-name"></div>
+          <div class="weapon-cell weapon-regular"></div>
+          <div class="weapon-cell weapon-hard"></div>
+          <div class="weapon-cell weapon-extreme"></div>
+          <div class="weapon-cell weapon-damage"></div>
+          <div class="weapon-cell weapon-range"></div>
+          <div class="weapon-cell weapon-attacks"></div>
+          <div class="weapon-cell weapon-ammo"></div>
+          <div class="weapon-cell weapon-malf"></div>
         </div>
         
-        <div class="derived-box">
-          <div class="derived-name">Build</div>
-          <div class="derived-value">{{ character.build }}</div>
+        <div class="weapon-row">
+          <div class="weapon-cell weapon-name"></div>
+          <div class="weapon-cell weapon-regular"></div>
+          <div class="weapon-cell weapon-hard"></div>
+          <div class="weapon-cell weapon-extreme"></div>
+          <div class="weapon-cell weapon-damage"></div>
+          <div class="weapon-cell weapon-range"></div>
+          <div class="weapon-cell weapon-attacks"></div>
+          <div class="weapon-cell weapon-ammo"></div>
+          <div class="weapon-cell weapon-malf"></div>
         </div>
         
-        <div class="derived-box">
-          <div class="derived-name">Movement Rate</div>
-          <div class="derived-value">{{ character.mov }}</div>
+        <div class="weapon-row">
+          <div class="weapon-cell weapon-name"></div>
+          <div class="weapon-cell weapon-regular"></div>
+          <div class="weapon-cell weapon-hard"></div>
+          <div class="weapon-cell weapon-extreme"></div>
+          <div class="weapon-cell weapon-damage"></div>
+          <div class="weapon-cell weapon-range"></div>
+          <div class="weapon-cell weapon-attacks"></div>
+          <div class="weapon-cell weapon-ammo"></div>
+          <div class="weapon-cell weapon-malf"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Skills Section -->
+    <div class="skills-section">
+      <div class="section-title">SKILLS</div>
+      
+      <div class="skills-columns">
+        <!-- Column 1: First third of skills alphabetically -->
+        <div class="skills-column">
+          <div *ngFor="let skill of skillsColumn1" class="skill-row">
+            <div class="skill-checkbox"></div>
+            <div class="skill-name">{{ skill.name }}</div>
+            <div class="skill-value-container">
+              <div class="skill-regular">{{ skill.total }}</div>
+              <div class="skill-derived-values">
+                <div class="skill-hard">{{ Math.floor(skill.total / 2) }}</div>
+                <div class="skill-extreme">{{ Math.floor(skill.total / 5) }}</div>
+              </div>
+            </div>
+          </div>
         </div>
         
-        <div class="derived-box">
-          <div class="derived-name">Luck</div>
-          <div class="derived-value">{{ character.luck }}</div>
+        <!-- Column 2: Second third of skills alphabetically -->
+        <div class="skills-column">
+          <div *ngFor="let skill of skillsColumn2" class="skill-row">
+            <div class="skill-checkbox"></div>
+            <div class="skill-name">{{ skill.name }}</div>
+            <div class="skill-value-container">
+              <div class="skill-regular">{{ skill.total }}</div>
+              <div class="skill-derived-values">
+                <div class="skill-hard">{{ Math.floor(skill.total / 2) }}</div>
+                <div class="skill-extreme">{{ Math.floor(skill.total / 5) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Column 3: Final third of skills alphabetically -->
+        <div class="skills-column">
+          <div *ngFor="let skill of skillsColumn3" class="skill-row">
+            <div class="skill-checkbox"></div>
+            <div class="skill-name">{{ skill.name }}</div>
+            <div class="skill-value-container">
+              <div class="skill-regular">{{ skill.total }}</div>
+              <div class="skill-derived-values">
+                <div class="skill-hard">{{ Math.floor(skill.total / 2) }}</div>
+                <div class="skill-extreme">{{ Math.floor(skill.total / 5) }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     
-    <div class="sheet-section">
-      <h3 class="section-header">Combat Skills</h3>
-      
-      <div class="skills-table">
-        <table>
-          <thead>
-            <tr>
-              <th class="skill-name">Skill</th>
-              <th>Value</th>
-              <th>Half</th>
-              <th>Fifth</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let skill of combatSkills">
-              <td class="skill-name">{{ skill.name }}</td>
-              <td>{{ skill.total }}</td>
-              <td>{{ Math.floor(skill.total / 2) }}</td>
-              <td>{{ Math.floor(skill.total / 5) }}</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
-    <div class="sheet-section">
-      <h3 class="section-header">Social Skills</h3>
-      
-      <div class="skills-table">
-        <table>
-          <thead>
-            <tr>
-              <th class="skill-name">Skill</th>
-              <th>Value</th>
-              <th>Half</th>
-              <th>Fifth</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let skill of socialSkills">
-              <td class="skill-name">{{ skill.name }}</td>
-              <td>{{ skill.total }}</td>
-              <td>{{ Math.floor(skill.total / 2) }}</td>
-              <td>{{ Math.floor(skill.total / 5) }}</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
-    <div class="sheet-section">
-      <h3 class="section-header">Knowledge Skills</h3>
-      
-      <div class="skills-table">
-        <table>
-          <thead>
-            <tr>
-              <th class="skill-name">Skill</th>
-              <th>Value</th>
-              <th>Half</th>
-              <th>Fifth</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let skill of knowledgeSkills">
-              <td class="skill-name">{{ skill.name }}</td>
-              <td>{{ skill.total }}</td>
-              <td>{{ Math.floor(skill.total / 2) }}</td>
-              <td>{{ Math.floor(skill.total / 5) }}</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
-    <div class="sheet-section">
-      <h3 class="section-header">Technical & Survival Skills</h3>
-      
-      <div class="skills-table">
-        <table>
-          <thead>
-            <tr>
-              <th class="skill-name">Skill</th>
-              <th>Value</th>
-              <th>Half</th>
-              <th>Fifth</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-              <th class="checkbox-col">☐</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let skill of technicalSkills">
-              <td class="skill-name">{{ skill.name }}</td>
-              <td>{{ skill.total }}</td>
-              <td>{{ Math.floor(skill.total / 2) }}</td>
-              <td>{{ Math.floor(skill.total / 5) }}</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-              <td class="checkbox-col">☐</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
-    <div class="sheet-section">
-      <h3 class="section-header">Backstory</h3>
+    <!-- Backstory Section -->
+    <div class="backstory-section">
+      <div class="section-title">INVESTIGATOR BACKSTORY</div>
       
       <div class="backstory-grid">
-        <div class="backstory-item">
-          <div class="backstory-label">Personal Ideology/Beliefs</div>
-          <div class="backstory-value">{{ character.ideology }}</div>
+        <!-- Personal Description -->
+        <div class="backstory-box">
+          <div class="backstory-title">Personal Description</div>
+          <div class="backstory-content">
+            {{ character.name }} is a {{ character.age }}-year-old {{ character.occupation?.name }}.
+            {{ character.name }} is {{ character.trait }} in personality.
+          </div>
         </div>
         
-        <div class="backstory-item">
-          <div class="backstory-label">Significant Person</div>
-          <div class="backstory-value">{{ character.significantPerson.who }} ({{ character.significantPerson.why }})</div>
+        <!-- Ideology/Beliefs -->
+        <div class="backstory-box">
+          <div class="backstory-title">Ideology/Beliefs</div>
+          <div class="backstory-content">{{ character.ideology }}</div>
         </div>
         
-        <div class="backstory-item">
-          <div class="backstory-label">Meaningful Location</div>
-          <div class="backstory-value">{{ character.meaningfulLocation }}</div>
+        <!-- Significant People -->
+        <div class="backstory-box">
+          <div class="backstory-title">Significant People</div>
+          <div class="backstory-content">
+            {{ character.significantPerson.who }} ({{ character.significantPerson.why }})
+          </div>
         </div>
         
-        <div class="backstory-item">
-          <div class="backstory-label">Treasured Possession</div>
-          <div class="backstory-value">{{ character.treasuredPossession }}</div>
+        <!-- Meaningful Locations -->
+        <div class="backstory-box">
+          <div class="backstory-title">Meaningful Locations</div>
+          <div class="backstory-content">{{ character.meaningfulLocation }}</div>
         </div>
         
-        <div class="backstory-item">
-          <div class="backstory-label">Character Trait</div>
-          <div class="backstory-value">{{ character.trait }}</div>
+        <!-- Treasured Possessions -->
+        <div class="backstory-box">
+          <div class="backstory-title">Treasured Possessions</div>
+          <div class="backstory-content">{{ character.treasuredPossession }}</div>
+        </div>
+        
+        <!-- Traits -->
+        <div class="backstory-box">
+          <div class="backstory-title">Traits</div>
+          <div class="backstory-content">{{ character.trait }}</div>
+        </div>
+        
+        <!-- Injuries & Scars -->
+        <div class="backstory-box">
+          <div class="backstory-title">Injuries & Scars</div>
+          <div class="backstory-content"></div>
+        </div>
+        
+        <!-- Phobias/Manias -->
+        <div class="backstory-box">
+          <div class="backstory-title">Phobias/Manias</div>
+          <div class="backstory-content"></div>
+        </div>
+        
+        <!-- Arcane Tomes, Spells & Artifacts -->
+        <div class="backstory-box">
+          <div class="backstory-title">Arcane Tomes, Spells & Artifacts</div>
+          <div class="backstory-content"></div>
+        </div>
+        
+        <!-- Encounters with Strange Entities -->
+        <div class="backstory-box">
+          <div class="backstory-title">Encounters with Strange Entities</div>
+          <div class="backstory-content"></div>
         </div>
       </div>
     </div>
     
+    <!-- Footer -->
     <div class="sheet-footer">
-      <div class="copyright">Call of Cthulhu © Chaosium Inc.</div>
-      <div class="app-note">Generated with Cthulhu Character Builder</div>
+      <div class="copyright">Cthulhu Character Builder | Based on Call of Cthulhu 7th Edition | © Chaosium Inc.</div>
     </div>
   </div>
 </div>

@@ -1,7 +1,12 @@
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.section-title {
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .sheet-actions {
@@ -10,228 +15,432 @@
   margin-bottom: 20px;
 }
 
+/* Character Sheet Styling */
 .character-sheet {
   background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid #000;
+  padding: 30px;
+  font-family: 'Garamond', 'Times New Roman', serif;
+  color: #000;
+  line-height: 1.2;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  margin: 0 auto;
 }
 
+/* Header Styles */
 .sheet-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 20px;
   border-bottom: 2px solid #000;
   padding-bottom: 10px;
 }
 
-.sheet-title {
-  font-size: 24px;
-  margin: 0;
-  letter-spacing: 2px;
-  font-weight: bold;
+.header-left {
+  text-align: left;
 }
 
-.sheet-subtitle {
-  font-size: 18px;
-  margin: 5px 0 0;
+.coc-logo {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'Trajan Pro', 'Times New Roman', serif;
+  letter-spacing: 2px;
+}
+
+.edition {
+  font-size: 14px;
   font-style: italic;
 }
 
-.basic-info {
+.header-right {
+  text-align: right;
+}
+
+.sheet-title {
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Personal Information */
+.personal-info {
   margin-bottom: 20px;
 }
 
 .info-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
+  margin-bottom: 10px;
 }
 
-.info-item {
+.info-field {
   flex: 1;
-  min-width: 200px;
+  position: relative;
 }
 
-.info-item label {
+.name-field, .player-field {
+  flex: 2;
+}
+
+.field-label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: white;
+  padding: 0 5px;
+  font-size: 12px;
   font-weight: bold;
-  margin-right: 5px;
 }
 
-.info-value {
-  border-bottom: 1px solid #999;
-  display: inline-block;
-  min-width: 150px;
-  padding: 2px 0;
+.field-value {
+  border: 1px solid #000;
+  padding: 8px 10px;
+  min-height: 20px;
 }
 
-.sheet-section {
-  margin-bottom: 30px;
+/* Characteristics Section */
+.characteristics-section {
+  margin-bottom: 20px;
+  border: 1px solid #000;
 }
 
-.section-header {
+.section-title {
   background-color: #000;
   color: #fff;
   padding: 5px 10px;
-  margin: 0 0 15px;
+  font-weight: bold;
   font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.stats-grid {
+.char-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
 }
 
-.stat-box {
+.char-box {
+  display: flex;
+  flex-direction: column;
   border: 1px solid #000;
+}
+
+.char-header {
+  display: flex;
+  align-items: baseline;
+  padding: 5px;
+  border-bottom: 1px solid #000;
+  background-color: #f5f5f5;
+}
+
+.char-name {
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.char-desc {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.char-values {
+  display: flex;
   text-align: center;
-  display: grid;
-  grid-template-areas:
-    "name name"
-    "value value"
-    "half fifth";
-  grid-template-rows: auto auto auto;
+  padding: 5px;
 }
 
-.stat-name {
-  grid-area: name;
-  background-color: #000;
-  color: #fff;
-  padding: 2px;
+.char-value {
+  flex: 2;
+  padding: 8px 0;
+  font-size: 22px;
   font-weight: bold;
 }
 
-.stat-value {
-  grid-area: value;
-  font-size: 24px;
-  font-weight: bold;
-  padding: 10px 0;
+.char-derived-values {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #ccc;
 }
 
-.stat-half {
-  grid-area: half;
-  border-top: 1px solid #000;
-  border-right: 1px solid #000;
-  padding: 5px;
+.char-half, .char-fifth {
   font-size: 14px;
+  padding: 4px 0;
 }
 
-.stat-fifth {
-  grid-area: fifth;
-  border-top: 1px solid #000;
-  padding: 5px;
-  font-size: 14px;
+.char-half {
+  border-bottom: 1px solid #eee;
 }
 
-.derived-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+.char-key {
+  display: flex;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: #666;
+  border-top: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.key-item {
+  flex: 1;
+  text-align: center;
+}
+
+/* Derived Attributes */
+.derived-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.derived-row {
+  display: flex;
   gap: 15px;
 }
 
 .derived-box {
+  flex: 1;
   border: 1px solid #000;
   text-align: center;
+  position: relative;
 }
 
-.derived-name {
-  background-color: #000;
-  color: #fff;
-  padding: 2px;
-  font-weight: bold;
-}
-
-.derived-value {
-  font-size: 20px;
-  font-weight: bold;
-  padding: 10px 0;
-}
-
-.skills-table {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.skills-table table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.skills-table th, .skills-table td {
+.damage-box {
   border: 1px solid #000;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.derived-title, .damage-title {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #000;
   padding: 5px;
-  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
 }
 
-.skills-table th {
-  background-color: #f0f0f0;
+.derived-circle {
+  font-size: 24px;
   font-weight: bold;
+  margin: 10px 0;
+}
+
+.derived-max {
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.damage-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Number track styling for Sanity, Luck, HP, and Magic Points */
+.number-track {
+  padding: 5px;
+  font-size: 9px;
+}
+
+.number-track-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.hp-track, .mp-track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  padding: 5px;
+}
+
+.number-box {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.number-box.filled {
+  background-color: #ddd;
+}
+
+/* Weapons Section */
+.weapons-section {
+  margin-bottom: 20px;
+  border: 1px solid #000;
+}
+
+.weapons-table {
+  width: 100%;
+}
+
+.weapons-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #000;
+}
+
+.weapon-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+  border-bottom: 1px solid #ccc;
+}
+
+.weapon-cell {
+  padding: 8px 5px;
+  text-align: center;
+  font-size: 14px;
+  border-right: 1px dotted #ccc;
+}
+
+.weapon-name {
+  text-align: left;
+  font-weight: bold;
+}
+
+/* Skills Section */
+.skills-section {
+  margin-bottom: 20px;
+  border: 1px solid #000;
+}
+
+.skills-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.skill-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dotted #ccc;
+  padding: 3px 0;
 }
 
 .skill-name {
-  text-align: left;
-  width: 40%;
+  flex: 3;
+  padding-left: 5px;
+  font-size: 14px;
 }
 
-.checkbox-col {
-  width: 30px;
+.skill-value-container {
+  flex: 4;
+  display: flex;
+}
+
+.skill-regular {
+  flex: 2;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.skill-derived-values {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #ccc;
+}
+
+.skill-hard, .skill-extreme {
+  text-align: center;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.skill-hard {
+  border-bottom: 1px solid #eee;
+}
+
+.skill-checkbox {
+  flex: 0.5;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #000;
+  margin: 0 auto;
+}
+
+/* Backstory Section */
+.backstory-section {
+  margin-bottom: 20px;
+  border: 1px solid #000;
 }
 
 .backstory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
 }
 
-.backstory-item {
+.backstory-box {
   border: 1px solid #000;
 }
 
-.backstory-label {
-  background-color: #000;
-  color: #fff;
-  padding: 2px 5px;
+.backstory-title {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #000;
+  padding: 5px;
   font-weight: bold;
+  font-size: 12px;
 }
 
-.backstory-value {
-  padding: 10px;
-  min-height: 30px;
+.backstory-content {
+  padding: 5px;
+  min-height: 40px;
+  font-size: 14px;
 }
 
+/* Footer */
 .sheet-footer {
   margin-top: 30px;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   color: #666;
   border-top: 1px solid #ccc;
   padding-top: 10px;
 }
 
+/* Print Styles */
 @media print {
   .non-printable {
     display: none;
   }
   
-  body {
-    margin: 0;
-    padding: 0;
-  }
-  
   .container {
-    width: 100%;
-    max-width: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
+    max-width: none;
   }
   
   .character-sheet {
     border: none;
     box-shadow: none;
-    padding: 0;
+    padding: 10px;
+    max-width: 100%;
+    margin: 0;
   }
   
   @page {
+    size: letter portrait;
     margin: 0.5cm;
   }
 }

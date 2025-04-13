@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -37,11 +37,12 @@ import { CharacterService } from '../../services/character.service';
 export class SkillsAllocatorComponent implements OnInit {
   character: Character | null = null;
   occupationalSkills: Skill[] = [];
+  selectedSkills: Skill[] = [];
   otherSkills: Skill[] = [];
-  pointsToAdd: { [key: string]: number } = {};
   
   occupationalDisplayedColumns: string[] = ['name', 'baseValue', 'improvementPoints', 'total', 'action'];
-  otherDisplayedColumns: string[] = ['name', 'baseValue', 'total'];
+  selectedDisplayedColumns: string[] = ['name', 'baseValue', 'improvementPoints', 'total', 'action', 'remove'];
+  otherDisplayedColumns: string[] = ['name', 'baseValue', 'total', 'add'];
   
   constructor(
     private characterService: CharacterService,
@@ -54,7 +55,6 @@ export class SkillsAllocatorComponent implements OnInit {
       this.character = character;
       if (this.character) {
         this.separateSkills();
-        this.initializePointsToAdd();
       } else {
         this.router.navigate(['/character-builder']);
       }
@@ -64,40 +64,90 @@ export class SkillsAllocatorComponent implements OnInit {
   separateSkills(): void {
     if (!this.character) return;
     
-    this.occupationalSkills = this.character.skills.filter(s => s.occupationalSkill);
-    this.otherSkills = this.character.skills.filter(s => !s.occupationalSkill);
+    this.occupationalSkills = this.character.skills
+      .filter(s => s.occupationalSkill && !s.isSelected)
+      .sort((a, b) => a.name.localeCompare(b.name));
+      
+    this.selectedSkills = this.character.skills
+      .filter(s => s.isSelected)
+      .sort((a, b) => a.name.localeCompare(b.name));
+      
+    this.otherSkills = this.character.skills
+      .filter(s => !s.occupationalSkill && !s.isSelected)
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
+  
+  addToPersonalInterests(skill: Skill): void {
+    if (!this.character) return;
+    
+    // Mark the skill as selected in the character's skills array
+    skill.isSelected = true;
+    
+    // Update arrays
+    this.selectedSkills.push(skill);
+    this.selectedSkills.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+    this.otherSkills = this.otherSkills.filter(s => s.name !== skill.name);
+    
+    this.snackBar.open(`Added ${skill.name} to your selected skills`, 'Close', { duration: 2000 });
+  }
+  
+  removeFromPersonalInterests(skill: Skill): void {
+    if (!this.character) return;
+    
+    // Cannot remove if points have been allocated
+    if (skill.improvementPoints > 0) {
 
-  initializePointsToAdd(): void {
-    this.occupationalSkills.forEach(skill => {
-      this.pointsToAdd[skill.name] = 0;
-    });
+      this.snackBar.open(`Cannot remove skill with allocated points`, 'Close', { duration: 3000 });
+      return;
+    }
+    
+    // Mark as not selected in the character's skills array
+    skill.isSelected = false;
+    
+    // Update arrays
+    const updatedOtherSkills = [...this.otherSkills];
+    updatedOtherSkills.push(skill);
+    updatedOtherSkills.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+    this.otherSkills = updatedOtherSkills;
+    this.selectedSkills = this.selectedSkills.filter(s => s.name !== skill.name);
+    
+    this.snackBar.open(`Removed ${skill.name} from your selected skills`, 'Close', { duration: 2000 });
   }
 
   addPoints(skill: Skill): void {
     if (!this.character) return;
     
-    const points = this.pointsToAdd[skill.name];
-    if (points <= 0) {
-      this.snackBar.open('Please enter a valid number of points', 'Close', { duration: 3000 });
+    const success = this.characterService.allocateSkillPoints(this.character, skill, 1);
+    
+    if (!success) {
+      this.snackBar.open('Failed to allocate points. Check your remaining points.', 'Close', { duration: 3000 });
+    }
+  }
+  
+  removePoints(skill: Skill): void {
+    if (!this.character) return;
+    
+    if (skill.improvementPoints <= 0) {
+      this.snackBar.open('No points to remove', 'Close', { duration: 2000 });
       return;
     }
     
-    const success = this.characterService.allocateSkillPoints(this.character, skill, points);
+    // Remove 1 point at a time for precise control
+    const success = this.characterService.allocateSkillPoints(this.character, skill, -1);
     
-    if (success) {
-      this.pointsToAdd[skill.name] = 0;
-      this.snackBar.open(`Added ${points} points to ${skill.name}`, 'Close', { duration: 2000 });
-    } else {
-      this.snackBar.open('Failed to allocate points. Check your remaining points.', 'Close', { duration: 3000 });
+    if (!success) {
+      this.snackBar.open('Failed to remove point', 'Close', { duration: 3000 });
     }
   }
 
   canContinue(): boolean {
     if (!this.character) return false;
     
-    // Check if any occupational skills have points allocated
-    return this.occupationalSkills.some(s => s.improvementPoints > 0);
+    // Check if any occupational or selected skills have points allocated
+    return (
+      this.occupationalSkills.some(s => s.improvementPoints > 0) || 
+      this.selectedSkills.some(s => s.improvementPoints > 0)
+    );
   }
 
   saveAndContinue(): void {

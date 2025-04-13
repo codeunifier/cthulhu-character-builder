@@ -21,6 +21,25 @@ h1, h2, h3 {
   margin-top: 15px;
 }
 
+.occupational-skills-description {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f4ff;
+  border-radius: 4px;
+  border-left: 4px solid #673ab7;
+  
+  h3 {
+    margin-top: 0;
+    color: #673ab7;
+  }
+  
+  .note {
+    font-size: 0.9em;
+    margin-top: 15px;
+    color: #666;
+  }
+}
+
 .table-container {
   overflow-x: auto;
   margin-top: 20px;
@@ -38,11 +57,15 @@ h1, h2, h3 {
 .add-points-container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 .points-input {
   width: 70px;
+}
+
+button.mat-mini-fab {
+  transform: scale(0.85); // Make buttons a bit smaller
 }
 
 .info-text {
@@ -51,8 +74,25 @@ h1, h2, h3 {
   margin-bottom: 15px;
 }
 
+.empty-state {
+  padding: 20px;
+  text-align: center;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  margin: 15px 0;
+  color: #666;
+  font-style: italic;
+}
+
 .actions-container {
   margin-top: 30px;
   display: flex;
   justify-content: flex-end;
+}
+
+.no-occupation {
+  background-color: #ffeeba;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 15px;
 }

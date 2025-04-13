@@ -1,17 +1,14 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button aria-label="Menu">
-    <mat-icon>menu</mat-icon>
-  </button>
   <span>{{ title }}</span>
   <span class="toolbar-spacer"></span>
-  <button mat-icon-button aria-label="Help">
+  <button mat-icon-button aria-label="Help" (click)="openHelpDialog()">
     <mat-icon>help_outline</mat-icon>
   </button>
 </mat-toolbar>
 
 <div class="main-container">
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav opened mode="side" class="sidenav">
+    <mat-sidenav #sidenav opened mode="side" class="sidenav" disableClose="true">
       <mat-nav-list>
         <a mat-list-item routerLink="/character-builder" routerLinkActive="active">
           <mat-icon>home</mat-icon>

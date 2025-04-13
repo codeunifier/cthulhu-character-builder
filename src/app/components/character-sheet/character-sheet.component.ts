@@ -26,12 +26,9 @@ import { CharacterService } from '../../services/character.service';
 })
 export class CharacterSheetComponent implements OnInit {
   character: Character | null = null;
-  combatSkills: Skill[] = [];
-  socialSkills: Skill[] = [];
-  knowledgeSkills: Skill[] = [];
-  technicalSkills: Skill[] = [];
-  
-  displayedColumns: string[] = ['name', 'total', 'checkbox'];
+  skillsColumn1: Skill[] = [];
+  skillsColumn2: Skill[] = [];
+  skillsColumn3: Skill[] = [];
   Math = Math; // Make Math available in the template
 
   constructor(
@@ -43,51 +40,30 @@ export class CharacterSheetComponent implements OnInit {
     this.characterService.getCharacter().subscribe(character => {
       this.character = character;
       if (this.character) {
-        this.categorizeSkills();
+        this.organizeSkills();
       } else {
         this.router.navigate(['/character-builder']);
       }
     });
   }
 
-  categorizeSkills(): void {
-    if (!this.character) return;
+  organizeSkills(): void {
+    if (!this.character || !this.character.skills) return;
     
-    // Combat Skills
-    this.combatSkills = this.character.skills.filter(skill => 
-      skill.name.includes('Fighting') || 
-      skill.name.includes('Firearms') || 
-      skill.name === 'Dodge' ||
-      skill.name === 'Throw'
+    // Sort all skills alphabetically
+    const sortedSkills = [...this.character.skills].sort((a, b) => 
+      a.name.localeCompare(b.name)
     );
     
-    // Social Skills
-    this.socialSkills = this.character.skills.filter(skill => 
-      skill.name === 'Charm' ||
-      skill.name === 'Fast Talk' ||
-      skill.name === 'Intimidate' ||
-      skill.name === 'Persuade' ||
-      skill.name === 'Psychology' ||
-      skill.name === 'Credit Rating'
-    );
+    // Determine column sizes
+    const totalSkills = sortedSkills.length;
+    const firstThird = Math.floor(totalSkills / 3);
+    const secondThird = Math.floor(2 * totalSkills / 3);
     
-    // Knowledge Skills
-    this.knowledgeSkills = this.character.skills.filter(skill => 
-      skill.name.includes('Language') ||
-      skill.name === 'History' ||
-      skill.name === 'Library Use' ||
-      skill.name === 'Occult' ||
-      skill.name === 'Science' ||
-      skill.name === 'Medicine' ||
-      skill.name === 'Cthulhu Mythos' ||
-      skill.name === 'Anthropology' ||
-      skill.name === 'Archaeology' ||
-      skill.name === 'Law'
-    );
-    
-    // Let's put the rest in technical skills
-    const existingSkills = [...this.combatSkills, ...this.socialSkills, ...this.knowledgeSkills].map(s => s.name);
-    this.technicalSkills = this.character.skills.filter(skill => !existingSkills.includes(skill.name));
+    // Slice into three columns
+    this.skillsColumn1 = sortedSkills.slice(0, firstThird);
+    this.skillsColumn2 = sortedSkills.slice(firstThird, secondThird);
+    this.skillsColumn3 = sortedSkills.slice(secondThird);
   }
 
   printSheet(): void {

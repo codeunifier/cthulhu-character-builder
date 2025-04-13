@@ -88,7 +88,7 @@ export class OccupationSelectorComponent implements OnInit {
   }
 
   getSkillsString(occupation: Occupation): string {
-    return occupation.skills.join(', ');
+    return occupation.skillsDescription || occupation.skills.join(', ');
   }
 
   getCreditRatingString(occupation: Occupation): string {

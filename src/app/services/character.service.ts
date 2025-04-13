@@ -357,10 +357,26 @@ export class CharacterService {
   }
 
   allocateSkillPoints(character: Character, skill: Skill, points: number): boolean {
+    // For removing points (negative points)
+    if (points < 0) {
+      const pointsToRemove = Math.abs(points);
+      
+      // Can't remove more points than are allocated
+      if (pointsToRemove > skill.improvementPoints) return false;
+      
+      skill.improvementPoints -= pointsToRemove;
+      skill.total = skill.baseValue + skill.improvementPoints;
+      character.remainingSkillPoints += pointsToRemove;
+      
+      this.updateCharacter(character);
+      return true;
+    }
+    
+    // For adding points (positive points)
     if (points <= 0 || points > character.remainingSkillPoints) return false;
     
-    // For non-occupational skills, points can only be allocated during character creation
-    if (!skill.occupationalSkill) return false;
+    // Points can be allocated to occupational skills or selected skills
+    if (!skill.occupationalSkill && !skill.isSelected) return false;
     
     skill.improvementPoints += points;
     skill.total = skill.baseValue + skill.improvementPoints;
