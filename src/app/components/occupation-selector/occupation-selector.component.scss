@@ -1,0 +1,60 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  color: #512da8;
+}
+
+.selected-occupation {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+.no-occupation {
+  background-color: #ffeeba;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.occupation-table {
+  width: 100%;
+}
+
+.skills-cell {
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.points-value {
+  color: #512da8;
+  font-weight: bold;
+}
+
+.selected-row {
+  background-color: #ede7f6;
+}
+
+.actions-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -1,0 +1,264 @@
+<div class="container" *ngIf="character && statsForm">
+  <h1 class="section-title">Investigator Statistics</h1>
+  
+  <form [formGroup]="statsForm">
+    <mat-card>
+      <mat-card-content>
+        <h2>Basic Information</h2>
+        
+        <div class="form-row">
+          <mat-form-field class="form-field-full-width">
+            <mat-label>Character Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter investigator name">
+            <mat-error *ngIf="statsForm.get('name')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field class="form-field-full-width">
+            <mat-label>Age</mat-label>
+            <input matInput formControlName="age" type="number" min="15" max="89">
+            <mat-error *ngIf="statsForm.get('age')?.hasError('required')">
+              Age is required
+            </mat-error>
+            <mat-error *ngIf="statsForm.get('age')?.hasError('min') || statsForm.get('age')?.hasError('max')">
+              Age must be between 15 and 89
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field class="form-field-full-width">
+            <mat-label>Age Range (Apply Effects)</mat-label>
+            <select matNativeControl (change)="onAgeChange($event)">
+              <option value="">Select age range</option>
+              <option *ngFor="let range of ageRanges" [value]="range.value">
+                {{ range.label }}
+              </option>
+            </select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card>
+      <mat-card-content>
+        <div class="space-between">
+          <h2>Characteristics</h2>
+          <button mat-raised-button color="primary" (click)="rollAllStats()">
+            <mat-icon>casino</mat-icon> Roll All Stats
+          </button>
+        </div>
+        
+        <div class="stat-grid">
+          <!-- STR -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>STR (Strength)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('str')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="str" type="number" min="15" max="90">
+              <mat-error *ngIf="statsForm.get('str')?.invalid">
+                STR must be between 15-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Physical power and muscle</p>
+          </div>
+          
+          <!-- CON -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>CON (Constitution)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('con')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="con" type="number" min="15" max="90">
+              <mat-error *ngIf="statsForm.get('con')?.invalid">
+                CON must be between 15-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Health and resilience</p>
+          </div>
+          
+          <!-- SIZ -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>SIZ (Size)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('siz')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="siz" type="number" min="40" max="90">
+              <mat-error *ngIf="statsForm.get('siz')?.invalid">
+                SIZ must be between 40-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Physical mass and stature</p>
+          </div>
+          
+          <!-- DEX -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>DEX (Dexterity)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('dex')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="dex" type="number" min="15" max="90">
+              <mat-error *ngIf="statsForm.get('dex')?.invalid">
+                DEX must be between 15-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Agility and reflexes</p>
+          </div>
+          
+          <!-- APP -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>APP (Appearance)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('app')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="app" type="number" min="15" max="90">
+              <mat-error *ngIf="statsForm.get('app')?.invalid">
+                APP must be between 15-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Charisma and looks</p>
+          </div>
+          
+          <!-- INT -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>INT (Intelligence)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('int')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="int" type="number" min="40" max="90">
+              <mat-error *ngIf="statsForm.get('int')?.invalid">
+                INT must be between 40-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Problem-solving and learning</p>
+          </div>
+          
+          <!-- POW -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>POW (Power)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('pow')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="pow" type="number" min="15" max="90">
+              <mat-error *ngIf="statsForm.get('pow')?.invalid">
+                POW must be between 15-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Willpower and spirit</p>
+          </div>
+          
+          <!-- EDU -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>EDU (Education)</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('edu')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="edu" type="number" min="40" max="90">
+              <mat-error *ngIf="statsForm.get('edu')?.invalid">
+                EDU must be between 40-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Formal learning and knowledge</p>
+          </div>
+          
+          <!-- LUCK -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <h3>Luck</h3>
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('luck')">
+                <mat-icon>casino</mat-icon>
+              </button>
+            </div>
+            <mat-form-field class="form-field-full-width">
+              <input matInput formControlName="luck" type="number" min="15" max="90">
+              <mat-error *ngIf="statsForm.get('luck')?.invalid">
+                Luck must be between 15-90
+              </mat-error>
+            </mat-form-field>
+            <p class="stat-desc">Fate and fortune</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Derived Attributes -->
+    <mat-card>
+      <mat-card-content>
+        <h2>Derived Attributes</h2>
+        
+        <div class="derived-grid">
+          <div class="derived-item">
+            <h3>Hit Points</h3>
+            <div class="derived-value">{{ character.hp }}</div>
+            <p class="stat-desc">(CON + SIZ) / 10, rounded down</p>
+          </div>
+          
+          <div class="derived-item">
+            <h3>Damage Bonus</h3>
+            <div class="derived-value">{{ character.damageBonus }}</div>
+            <p class="stat-desc">Based on STR + SIZ</p>
+          </div>
+          
+          <div class="derived-item">
+            <h3>Build</h3>
+            <div class="derived-value">{{ character.build }}</div>
+            <p class="stat-desc">Based on STR + SIZ</p>
+          </div>
+          
+          <div class="derived-item">
+            <h3>Movement Rate</h3>
+            <div class="derived-value">{{ character.mov }}</div>
+            <p class="stat-desc">Based on STR, DEX, SIZ, and age</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Pending Age Deduction -->
+    <mat-card *ngIf="pendingDeduction">
+      <mat-card-content>
+        <h2 class="warning-title">Age Penalty Selection</h2>
+        <p>Due to your character's age, you must reduce one of the following statistics by {{ pendingDeduction.points }} points:</p>
+        
+        <div class="deduction-options">
+          <button mat-raised-button *ngFor="let stat of pendingDeduction.stats" 
+                  (click)="applyStatDeduction(stat)">
+            Apply to {{ stat.toUpperCase() }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <div class="actions-container">
+      <button mat-raised-button color="primary" (click)="saveAndContinue()" [disabled]="statsForm.invalid || pendingDeduction">
+        Save and Continue
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,61 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  color: #512da8;
+}
+
+.backstory-intro {
+  margin-bottom: 20px;
+}
+
+.randomize-all {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.backstory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.backstory-card {
+  height: 100%;
+}
+
+.backstory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.backstory-header h3 {
+  margin: 0;
+}
+
+.backstory-desc {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.backstory-summary {
+  margin-top: 30px;
+}
+
+.actions-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}

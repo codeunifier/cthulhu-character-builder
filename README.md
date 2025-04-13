@@ -1,59 +1,64 @@
-# CthulhuCharacterBuilder
+# Call of Cthulhu Character Builder
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.7.
+An Angular application for creating and managing characters for the Call of Cthulhu tabletop role-playing game (7th Edition).
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Create and customize investigators for Call of Cthulhu
+- Generate random or manually enter character statistics
+- Choose from various occupations with associated skills
+- Allocate skill points based on occupation
+- Create character backstory elements
+- Generate and print character sheets
+- Save characters locally
 
-```bash
-ng serve
-```
+## Character Creation Process
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+1. **Generate Statistics** - Roll or manually enter the eight core characteristics (STR, CON, SIZ, DEX, APP, INT, POW, EDU)
+2. **Select Occupation** - Choose from various professions, each with specific skills and a formula for calculating skill points
+3. **Allocate Skill Points** - Distribute points among occupational skills
+4. **Create Backstory** - Define your character's beliefs, important relationships, and personal traits
+5. **Review Character Sheet** - View the completed character and print it for gameplay
 
-## Code scaffolding
+## Technical Implementation
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+This project is built with:
 
-```bash
-ng generate component component-name
-```
+- Angular (latest version)
+- Angular Material for UI components
+- TypeScript
+- RxJS for state management
+- Responsive design principles
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Development Setup
 
-```bash
-ng generate --help
-```
+### Prerequisites
 
-## Building
+- Node.js (v14+)
+- npm or yarn
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Installation
 
 ```bash
-ng e2e
+# Clone the repository
+git clone <repository-url>
+
+# Navigate to the project directory
+cd cthulhu-character-builder
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Visit `http://localhost:4200/` to view the application.
 
-## Additional Resources
+## License
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This is a fan-made application for personal use. Call of Cthulhu is a registered trademark of Chaosium Inc.
+
+## Acknowledgments
+
+This application is based on the character creation rules for the Call of Cthulhu 7th Edition tabletop role-playing game.

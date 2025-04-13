@@ -1,0 +1,58 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  color: #512da8;
+}
+
+.points-remaining {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #512da8;
+}
+
+.skill-instructions {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.skills-table {
+  width: 100%;
+}
+
+.total-column {
+  font-weight: bold;
+  color: #512da8;
+}
+
+.add-points-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.points-input {
+  width: 70px;
+}
+
+.info-text {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+.actions-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}

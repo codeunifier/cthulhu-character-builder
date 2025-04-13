@@ -1,0 +1,294 @@
+<div class="container" *ngIf="character">
+  <div class="non-printable">
+    <h1 class="section-title">Character Sheet</h1>
+    
+    <div class="sheet-actions">
+      <button mat-raised-button color="primary" (click)="printSheet()">
+        <mat-icon>print</mat-icon> Print Character Sheet
+      </button>
+      <button mat-raised-button color="accent" (click)="saveCharacter()">
+        <mat-icon>save</mat-icon> Save Character
+      </button>
+      <button mat-raised-button (click)="createNewCharacter()">
+        <mat-icon>add</mat-icon> Create New Character
+      </button>
+    </div>
+  </div>
+  
+  <div class="character-sheet">
+    <div class="sheet-header">
+      <h2 class="sheet-title">CALL OF CTHULHU</h2>
+      <h3 class="sheet-subtitle">Investigator Sheet</h3>
+    </div>
+    
+    <div class="basic-info">
+      <div class="info-row">
+        <div class="info-item">
+          <label>Name:</label>
+          <span class="info-value">{{ character.name }}</span>
+        </div>
+        <div class="info-item">
+          <label>Occupation:</label>
+          <span class="info-value">{{ character.occupation?.name }}</span>
+        </div>
+        <div class="info-item">
+          <label>Age:</label>
+          <span class="info-value">{{ character.age }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Characteristics</h3>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-name">STR</div>
+          <div class="stat-value">{{ character.str }}</div>
+          <div class="stat-half">{{ Math.floor(character.str / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.str / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">CON</div>
+          <div class="stat-value">{{ character.con }}</div>
+          <div class="stat-half">{{ Math.floor(character.con / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.con / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">SIZ</div>
+          <div class="stat-value">{{ character.siz }}</div>
+          <div class="stat-half">{{ Math.floor(character.siz / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.siz / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">DEX</div>
+          <div class="stat-value">{{ character.dex }}</div>
+          <div class="stat-half">{{ Math.floor(character.dex / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.dex / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">APP</div>
+          <div class="stat-value">{{ character.app }}</div>
+          <div class="stat-half">{{ Math.floor(character.app / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.app / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">INT</div>
+          <div class="stat-value">{{ character.int }}</div>
+          <div class="stat-half">{{ Math.floor(character.int / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.int / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">POW</div>
+          <div class="stat-value">{{ character.pow }}</div>
+          <div class="stat-half">{{ Math.floor(character.pow / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.pow / 5) }}</div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-name">EDU</div>
+          <div class="stat-value">{{ character.edu }}</div>
+          <div class="stat-half">{{ Math.floor(character.edu / 2) }}</div>
+          <div class="stat-fifth">{{ Math.floor(character.edu / 5) }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Derived Attributes</h3>
+      
+      <div class="derived-grid">
+        <div class="derived-box">
+          <div class="derived-name">Hit Points</div>
+          <div class="derived-value">{{ character.hp }}</div>
+        </div>
+        
+        <div class="derived-box">
+          <div class="derived-name">Damage Bonus</div>
+          <div class="derived-value">{{ character.damageBonus }}</div>
+        </div>
+        
+        <div class="derived-box">
+          <div class="derived-name">Build</div>
+          <div class="derived-value">{{ character.build }}</div>
+        </div>
+        
+        <div class="derived-box">
+          <div class="derived-name">Movement Rate</div>
+          <div class="derived-value">{{ character.mov }}</div>
+        </div>
+        
+        <div class="derived-box">
+          <div class="derived-name">Luck</div>
+          <div class="derived-value">{{ character.luck }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Combat Skills</h3>
+      
+      <div class="skills-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="skill-name">Skill</th>
+              <th>Value</th>
+              <th>Half</th>
+              <th>Fifth</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let skill of combatSkills">
+              <td class="skill-name">{{ skill.name }}</td>
+              <td>{{ skill.total }}</td>
+              <td>{{ Math.floor(skill.total / 2) }}</td>
+              <td>{{ Math.floor(skill.total / 5) }}</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Social Skills</h3>
+      
+      <div class="skills-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="skill-name">Skill</th>
+              <th>Value</th>
+              <th>Half</th>
+              <th>Fifth</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let skill of socialSkills">
+              <td class="skill-name">{{ skill.name }}</td>
+              <td>{{ skill.total }}</td>
+              <td>{{ Math.floor(skill.total / 2) }}</td>
+              <td>{{ Math.floor(skill.total / 5) }}</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Knowledge Skills</h3>
+      
+      <div class="skills-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="skill-name">Skill</th>
+              <th>Value</th>
+              <th>Half</th>
+              <th>Fifth</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let skill of knowledgeSkills">
+              <td class="skill-name">{{ skill.name }}</td>
+              <td>{{ skill.total }}</td>
+              <td>{{ Math.floor(skill.total / 2) }}</td>
+              <td>{{ Math.floor(skill.total / 5) }}</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Technical & Survival Skills</h3>
+      
+      <div class="skills-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="skill-name">Skill</th>
+              <th>Value</th>
+              <th>Half</th>
+              <th>Fifth</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+              <th class="checkbox-col">☐</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let skill of technicalSkills">
+              <td class="skill-name">{{ skill.name }}</td>
+              <td>{{ skill.total }}</td>
+              <td>{{ Math.floor(skill.total / 2) }}</td>
+              <td>{{ Math.floor(skill.total / 5) }}</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+              <td class="checkbox-col">☐</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="sheet-section">
+      <h3 class="section-header">Backstory</h3>
+      
+      <div class="backstory-grid">
+        <div class="backstory-item">
+          <div class="backstory-label">Personal Ideology/Beliefs</div>
+          <div class="backstory-value">{{ character.ideology }}</div>
+        </div>
+        
+        <div class="backstory-item">
+          <div class="backstory-label">Significant Person</div>
+          <div class="backstory-value">{{ character.significantPerson.who }} ({{ character.significantPerson.why }})</div>
+        </div>
+        
+        <div class="backstory-item">
+          <div class="backstory-label">Meaningful Location</div>
+          <div class="backstory-value">{{ character.meaningfulLocation }}</div>
+        </div>
+        
+        <div class="backstory-item">
+          <div class="backstory-label">Treasured Possession</div>
+          <div class="backstory-value">{{ character.treasuredPossession }}</div>
+        </div>
+        
+        <div class="backstory-item">
+          <div class="backstory-label">Character Trait</div>
+          <div class="backstory-value">{{ character.trait }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sheet-footer">
+      <div class="copyright">Call of Cthulhu © Chaosium Inc.</div>
+      <div class="app-note">Generated with Cthulhu Character Builder</div>
+    </div>
+  </div>
+</div>

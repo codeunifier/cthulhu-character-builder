@@ -1,0 +1,110 @@
+<div class="container">
+  <h1 class="section-title text-center">Call of Cthulhu Character Builder</h1>
+  
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="character" class="character-overview">
+        <h2>Character Overview</h2>
+        <p *ngIf="character.name"><strong>Name:</strong> {{ character.name }}</p>
+        <p *ngIf="character.age"><strong>Age:</strong> {{ character.age }}</p>
+        <p *ngIf="character.occupation"><strong>Occupation:</strong> {{ character.occupation.name }}</p>
+        
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-label">STR</span>
+            <span class="stat-value">{{ character.str }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">CON</span>
+            <span class="stat-value">{{ character.con }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">SIZ</span>
+            <span class="stat-value">{{ character.siz }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">DEX</span>
+            <span class="stat-value">{{ character.dex }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">APP</span>
+            <span class="stat-value">{{ character.app }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">INT</span>
+            <span class="stat-value">{{ character.int }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">POW</span>
+            <span class="stat-value">{{ character.pow }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">EDU</span>
+            <span class="stat-value">{{ character.edu }}</span>
+          </div>
+        </div>
+        
+        <div class="derived-stats">
+          <p><strong>Hit Points:</strong> {{ character.hp }}</p>
+          <p><strong>Damage Bonus:</strong> {{ character.damageBonus }}</p>
+          <p><strong>Movement Rate:</strong> {{ character.mov }}</p>
+        </div>
+        
+        <div class="progress-container">
+          <p><strong>Character Creation Progress:</strong> {{ getCharacterProgress() }}%</p>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getCharacterProgress()"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="!character" class="no-character">
+        <p>No character has been created yet. Click the button below to start creating your investigator.</p>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="createNewCharacter()">
+        <mat-icon>add</mat-icon> New Character
+      </button>
+      <button mat-raised-button color="accent" *ngIf="character" (click)="continueCharacter()">
+        <mat-icon>edit</mat-icon> Continue Character
+      </button>
+      <button mat-raised-button *ngIf="character" (click)="saveCharacter()">
+        <mat-icon>save</mat-icon> Save Character
+      </button>
+    </mat-card-actions>
+  </mat-card>
+  
+  <mat-card>
+    <mat-card-content>
+      <h2>Character Creation Steps</h2>
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>bar_chart</mat-icon>
+          <span matListItemTitle>1. Generate Characteristics</span>
+          <span matListItemLine>Roll or assign your core statistics</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>work</mat-icon>
+          <span matListItemTitle>2. Choose Occupation</span>
+          <span matListItemLine>Select your character's profession</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>psychology</mat-icon>
+          <span matListItemTitle>3. Allocate Skill Points</span>
+          <span matListItemLine>Distribute points to occupational and personal skills</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>history_edu</mat-icon>
+          <span matListItemTitle>4. Create Backstory</span>
+          <span matListItemLine>Develop your character's personal history</span>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>description</mat-icon>
+          <span matListItemTitle>5. Finalize Character Sheet</span>
+          <span matListItemLine>Review and save your completed investigator</span>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>

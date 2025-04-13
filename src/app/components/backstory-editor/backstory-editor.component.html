@@ -1,0 +1,176 @@
+<div class="container" *ngIf="character">
+  <h1 class="section-title">Character Backstory</h1>
+  
+  <mat-card>
+    <mat-card-content>
+      <div class="backstory-intro">
+        <h2>Develop Your Investigator's Backstory</h2>
+        <p>Every investigator has personal beliefs and connections that make them unique. These elements will help define your character's personality and motivations.</p>
+        <div class="randomize-all">
+          <button mat-raised-button color="accent" (click)="randomizeAll()">
+            <mat-icon>casino</mat-icon> Randomize All
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <div class="backstory-grid">
+    <!-- Personal Ideology -->
+    <mat-card class="backstory-card">
+      <mat-card-content>
+        <div class="backstory-header">
+          <h3>Personal Ideology or Beliefs</h3>
+          <button mat-mini-fab color="primary" (click)="randomIdeology()">
+            <mat-icon>casino</mat-icon>
+          </button>
+        </div>
+        
+        <p class="backstory-desc">What philosophy or belief system guides your character's actions?</p>
+        
+        <mat-form-field class="full-width">
+          <mat-label>Select or Enter Ideology</mat-label>
+          <input matInput [(ngModel)]="character.ideology" [matAutocomplete]="autoIdeology" placeholder="Enter or select">
+        </mat-form-field>
+        
+        <mat-autocomplete #autoIdeology="matAutocomplete">
+          <mat-option *ngFor="let option of ideologyOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Significant Person -->
+    <mat-card class="backstory-card">
+      <mat-card-content>
+        <div class="backstory-header">
+          <h3>Significant Person</h3>
+          <button mat-mini-fab color="primary" (click)="randomSignificantPerson()">
+            <mat-icon>casino</mat-icon>
+          </button>
+        </div>
+        
+        <p class="backstory-desc">Who is the most important person in your character's life?</p>
+        
+        <mat-form-field class="full-width">
+          <mat-label>Who</mat-label>
+          <input matInput [(ngModel)]="character.significantPerson.who" [matAutocomplete]="autoWho" placeholder="Enter or select">
+        </mat-form-field>
+        
+        <mat-autocomplete #autoWho="matAutocomplete">
+          <mat-option *ngFor="let option of significantPersons" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+        
+        <mat-form-field class="full-width">
+          <mat-label>Why</mat-label>
+          <input matInput [(ngModel)]="character.significantPerson.why" [matAutocomplete]="autoWhy" placeholder="Enter or select">
+        </mat-form-field>
+        
+        <mat-autocomplete #autoWhy="matAutocomplete">
+          <mat-option *ngFor="let option of significantReasons" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Meaningful Location -->
+    <mat-card class="backstory-card">
+      <mat-card-content>
+        <div class="backstory-header">
+          <h3>Meaningful Location</h3>
+          <button mat-mini-fab color="primary" (click)="randomMeaningfulLocation()">
+            <mat-icon>casino</mat-icon>
+          </button>
+        </div>
+        
+        <p class="backstory-desc">What place is special to your character?</p>
+        
+        <mat-form-field class="full-width">
+          <mat-label>Select or Enter Location</mat-label>
+          <input matInput [(ngModel)]="character.meaningfulLocation" [matAutocomplete]="autoLocation" placeholder="Enter or select">
+        </mat-form-field>
+        
+        <mat-autocomplete #autoLocation="matAutocomplete">
+          <mat-option *ngFor="let option of meaningfulLocations" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Treasured Possession -->
+    <mat-card class="backstory-card">
+      <mat-card-content>
+        <div class="backstory-header">
+          <h3>Treasured Possession</h3>
+          <button mat-mini-fab color="primary" (click)="randomTreasuredPossession()">
+            <mat-icon>casino</mat-icon>
+          </button>
+        </div>
+        
+        <p class="backstory-desc">What item does your character value above all others?</p>
+        
+        <mat-form-field class="full-width">
+          <mat-label>Select or Enter Possession</mat-label>
+          <input matInput [(ngModel)]="character.treasuredPossession" [matAutocomplete]="autoPossession" placeholder="Enter or select">
+        </mat-form-field>
+        
+        <mat-autocomplete #autoPossession="matAutocomplete">
+          <mat-option *ngFor="let option of treasuredPossessions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Character Trait -->
+    <mat-card class="backstory-card">
+      <mat-card-content>
+        <div class="backstory-header">
+          <h3>Character Trait</h3>
+          <button mat-mini-fab color="primary" (click)="randomTrait()">
+            <mat-icon>casino</mat-icon>
+          </button>
+        </div>
+        
+        <p class="backstory-desc">What personality trait defines your character?</p>
+        
+        <mat-form-field class="full-width">
+          <mat-label>Select or Enter Trait</mat-label>
+          <input matInput [(ngModel)]="character.trait" [matAutocomplete]="autoTrait" placeholder="Enter or select">
+        </mat-form-field>
+        
+        <mat-autocomplete #autoTrait="matAutocomplete">
+          <mat-option *ngFor="let option of traits" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <div class="backstory-summary" *ngIf="canContinue()">
+    <mat-card>
+      <mat-card-content>
+        <h2>Character Backstory Summary</h2>
+        
+        <p>{{ character.name }} is a {{ character.age }}-year-old {{ character.occupation?.name }}. 
+          {{ character.name }} believes in {{ character.ideology }} and values {{ character.trait | lowercase }} above all else.
+          The most significant person in {{ character.name }}'s life is their {{ character.significantPerson.who | lowercase }}, 
+          with whom they share a bond based on {{ character.significantPerson.why | lowercase }}.
+          {{ character.name }} has a special connection to {{ character.meaningfulLocation | lowercase }} and
+          carries a {{ character.treasuredPossession | lowercase }} that holds great personal value.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <div class="actions-container">
+    <button mat-raised-button color="primary" (click)="saveAndContinue()" [disabled]="!canContinue()">
+      Save and View Character Sheet
+    </button>
+  </div>
+</div>

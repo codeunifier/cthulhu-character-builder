@@ -1,0 +1,109 @@
+<div class="container" *ngIf="character">
+  <h1 class="section-title">Allocate Skill Points</h1>
+  
+  <mat-card>
+    <mat-card-content>
+      <h2>Occupation: {{ character.occupation?.name }}</h2>
+      <p><strong>Remaining Skill Points:</strong> <span class="points-remaining">{{ character.remainingSkillPoints }}</span></p>
+      
+      <div class="skill-instructions">
+        <p>Allocate your skill points to improve your occupational skills. You have {{ character.remainingSkillPoints }} points to distribute.</p>
+        <ul>
+          <li>Points can only be allocated to occupational skills during character creation.</li>
+          <li>You must spend at least some points on occupational skills to continue.</li>
+          <li>The Credit Rating skill must stay within the range for your occupation.</li>
+        </ul>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <mat-card>
+    <mat-card-content>
+      <h2>Occupational Skills</h2>
+      
+      <div class="table-container">
+        <table mat-table [dataSource]="occupationalSkills" class="skills-table">
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Skill</th>
+            <td mat-cell *matCellDef="let skill">{{ skill.name }}</td>
+          </ng-container>
+          
+          <!-- Base Value Column -->
+          <ng-container matColumnDef="baseValue">
+            <th mat-header-cell *matHeaderCellDef>Base</th>
+            <td mat-cell *matCellDef="let skill">{{ skill.baseValue }}</td>
+          </ng-container>
+          
+          <!-- Improvement Points Column -->
+          <ng-container matColumnDef="improvementPoints">
+            <th mat-header-cell *matHeaderCellDef>Improvement</th>
+            <td mat-cell *matCellDef="let skill">{{ skill.improvementPoints }}</td>
+          </ng-container>
+          
+          <!-- Total Column -->
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>Total</th>
+            <td mat-cell *matCellDef="let skill" class="total-column">{{ skill.total }}</td>
+          </ng-container>
+          
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Add Points</th>
+            <td mat-cell *matCellDef="let skill">
+              <div class="add-points-container">
+                <mat-form-field class="points-input">
+                  <input matInput type="number" min="0" [(ngModel)]="pointsToAdd[skill.name]" placeholder="Points">
+                </mat-form-field>
+                <button mat-mini-fab color="primary" (click)="addPoints(skill)" [disabled]="character.remainingSkillPoints <= 0">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="occupationalDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: occupationalDisplayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <mat-card>
+    <mat-card-content>
+      <h2>Other Skills</h2>
+      <p class="info-text">These skills are not part of your occupation and cannot be improved during character creation.</p>
+      
+      <div class="table-container">
+        <table mat-table [dataSource]="otherSkills" class="skills-table">
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Skill</th>
+            <td mat-cell *matCellDef="let skill">{{ skill.name }}</td>
+          </ng-container>
+          
+          <!-- Base Value Column -->
+          <ng-container matColumnDef="baseValue">
+            <th mat-header-cell *matHeaderCellDef>Base</th>
+            <td mat-cell *matCellDef="let skill">{{ skill.baseValue }}</td>
+          </ng-container>
+          
+          <!-- Total Column -->
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>Total</th>
+            <td mat-cell *matCellDef="let skill" class="total-column">{{ skill.total }}</td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="otherDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: otherDisplayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <div class="actions-container">
+    <button mat-raised-button color="primary" (click)="saveAndContinue()" [disabled]="!canContinue()">
+      Save and Continue
+    </button>
+  </div>
+</div>
