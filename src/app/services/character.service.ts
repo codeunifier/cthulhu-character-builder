@@ -108,32 +108,57 @@ export class CharacterService {
     } 
     else if (age >= 40 && age <= 49) {
       this.makeImprovementCheck(character, 'edu', 2);
-      // Deduct 5 points from STR, CON, or DEX (user's choice)
-      this.pendingDeduction = { stats: ['str', 'con', 'dex'], points: 5 };
+      // Deduct 5 points from STR, CON, or DEX (user can distribute)
+      this.pendingDeduction = { 
+        stats: ['str', 'con', 'dex'], 
+        points: 5,
+        remainingPoints: 5,
+        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+      };
       character.app -= 5;
     } 
     else if (age >= 50 && age <= 59) {
       this.makeImprovementCheck(character, 'edu', 3);
-      // Deduct 10 points from STR, CON, or DEX (user's choice)
-      this.pendingDeduction = { stats: ['str', 'con', 'dex'], points: 10 };
+      // Deduct 10 points from STR, CON, or DEX (user can distribute)
+      this.pendingDeduction = { 
+        stats: ['str', 'con', 'dex'], 
+        points: 10,
+        remainingPoints: 10,
+        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+      };
       character.app -= 10;
     } 
     else if (age >= 60 && age <= 69) {
       this.makeImprovementCheck(character, 'edu', 4);
-      // Deduct 20 points from STR, CON, or DEX (user's choice)
-      this.pendingDeduction = { stats: ['str', 'con', 'dex'], points: 20 };
+      // Deduct 20 points from STR, CON, or DEX (user can distribute)
+      this.pendingDeduction = { 
+        stats: ['str', 'con', 'dex'], 
+        points: 20,
+        remainingPoints: 20,
+        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+      };
       character.app -= 15;
     } 
     else if (age >= 70 && age <= 79) {
       this.makeImprovementCheck(character, 'edu', 4);
-      // Deduct 40 points from STR, CON, or DEX (user's choice)
-      this.pendingDeduction = { stats: ['str', 'con', 'dex'], points: 40 };
+      // Deduct 40 points from STR, CON, or DEX (user can distribute)
+      this.pendingDeduction = { 
+        stats: ['str', 'con', 'dex'], 
+        points: 40,
+        remainingPoints: 40,
+        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+      };
       character.app -= 20;
     } 
     else if (age >= 80 && age <= 89) {
       this.makeImprovementCheck(character, 'edu', 4);
-      // Deduct 80 points from STR, CON, or DEX (user's choice)
-      this.pendingDeduction = { stats: ['str', 'con', 'dex'], points: 80 };
+      // Deduct 80 points from STR, CON, or DEX (user can distribute)
+      this.pendingDeduction = { 
+        stats: ['str', 'con', 'dex'], 
+        points: 80,
+        remainingPoints: 80,
+        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+      };
       character.app -= 25;
     }
     
@@ -146,17 +171,52 @@ export class CharacterService {
     return this.pendingDeduction;
   }
 
-  applyStatDeduction(character: Character, stat: string): void {
-    if (!this.pendingDeduction) return;
+  applyStatDeduction(character: Character, stat: string, amount: number): void {
+    if (!this.pendingDeduction || !this.pendingDeduction.remainingPoints) return;
     
-    // Only apply deduction to number properties (str, con, dex)
-    if (stat === 'str' || stat === 'con' || stat === 'dex') {
-      character[stat] = Math.max(0, character[stat] - this.pendingDeduction.points);
+    // Validate amount
+    if (amount <= 0) return;
+    if (amount > this.pendingDeduction.remainingPoints) {
+      amount = this.pendingDeduction.remainingPoints;
     }
     
+    // Only apply deduction to the allowed stats
+    if (this.pendingDeduction.stats.includes(stat)) {
+      // Make sure we don't reduce below minimum (15)
+      const minAllowed = 15;
+      const maxDeduction = (character[stat as keyof Character] as number) - minAllowed;
+      
+      if (maxDeduction <= 0) {
+        return; // Cannot deduct any further
+      }
+      
+      // Apply the deduction but don't go below minimum
+      const actualDeduction = Math.min(amount, maxDeduction);
+      (character[stat as keyof Character] as number) -= actualDeduction;
+      
+      // Update tracking
+      if (this.pendingDeduction.deductions) {
+        this.pendingDeduction.deductions[stat] += actualDeduction;
+      }
+      
+      this.pendingDeduction.remainingPoints -= actualDeduction;
+      
+      // If no more points to deduct, clear the pending deduction
+      if (this.pendingDeduction.remainingPoints <= 0) {
+        this.pendingDeduction = null;
+      }
+      
+      this.updateDerivedAttributes(character);
+      this.updateCharacter(character);
+    }
+  }
+  
+  clearStatDeductions(): void {
     this.pendingDeduction = null;
-    this.updateDerivedAttributes(character);
-    this.updateCharacter(character);
+  }
+  
+  getRemainingDeductionPoints(): number {
+    return this.pendingDeduction?.remainingPoints || 0;
   }
 
   makeImprovementCheck(character: Character, stat: string, times: number): void {

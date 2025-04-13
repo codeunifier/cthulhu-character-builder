@@ -41,6 +41,41 @@
       </mat-card-content>
     </mat-card>
     
+    <!-- Pending Age Deduction -->
+    <mat-card *ngIf="pendingDeduction && ageDeductionForm">
+      <mat-card-content>
+        <form [formGroup]="ageDeductionForm">
+          <h2 class="warning-title">Age Penalty Selection</h2>
+          <p>Due to your character's age, you must reduce the following statistics by a total of {{ pendingDeduction.points }} points.</p>
+          <p class="remaining-points">Remaining points to distribute: {{ getRemainingDeductionPoints() }}</p>
+          
+          <div class="deduction-grid">
+            <div class="deduction-item" *ngFor="let stat of pendingDeduction.stats">
+              <div class="stat-name">{{ stat.toUpperCase() }}</div>
+              <div class="current-value">Current: {{ getCurrentStatValue(stat) }}</div>
+              <div class="deducted-so-far" *ngIf="getDeductionPerStat(stat) > 0">
+                Already deducted: {{ getDeductionPerStat(stat) }}
+              </div>
+              <div class="deduction-input">
+                <mat-form-field class="form-field-full-width">
+                  <mat-label>Deduct</mat-label>
+                  <input matInput [formControlName]="stat" type="number" min="0" [max]="getRemainingDeductionPoints()">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          
+          <div class="apply-all-container">
+            <button mat-raised-button color="accent" 
+                    [disabled]="getRemainingDeductionPoints() <= 0"
+                    (click)="applyAllDeductions()">
+              Apply All Deductions
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    
     <mat-card>
       <mat-card-content>
         <div class="space-between">
@@ -246,21 +281,6 @@
             <div class="derived-value">{{ derivedMovementRate }}</div>
             <p class="stat-desc">Based on STR, DEX, SIZ, and age</p>
           </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-    
-    <!-- Pending Age Deduction -->
-    <mat-card *ngIf="pendingDeduction">
-      <mat-card-content>
-        <h2 class="warning-title">Age Penalty Selection</h2>
-        <p>Due to your character's age, you must reduce one of the following statistics by {{ pendingDeduction.points }} points:</p>
-        
-        <div class="deduction-options">
-          <button mat-raised-button *ngFor="let stat of pendingDeduction.stats" 
-                  (click)="applyStatDeduction(stat)">
-            Apply to {{ stat.toUpperCase() }}
-          </button>
         </div>
       </mat-card-content>
     </mat-card>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +22,7 @@ import { DiceService } from '../../services/dice.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -37,8 +38,10 @@ import { DiceService } from '../../services/dice.service';
 })
 export class StatsEditorComponent implements OnInit {
   statsForm!: FormGroup;
+  ageDeductionForm?: FormGroup;
   character: Character | null = null;
   pendingDeduction: PendingDeduction | null = null;
+  deductionAmounts: { [key: string]: number } = {};
   
   // Derived attributes
   derivedHP: number = 0;
@@ -74,6 +77,13 @@ export class StatsEditorComponent implements OnInit {
     });
     
     this.pendingDeduction = this.characterService.getPendingDeduction();
+    
+    // Initialize deduction amounts for each stat if we have pending deductions
+    if (this.pendingDeduction && this.pendingDeduction.stats) {
+      this.pendingDeduction.stats.forEach(stat => {
+        this.deductionAmounts[stat] = 0;
+      });
+    }
   }
 
   initForm(): void {
@@ -232,6 +242,18 @@ export class StatsEditorComponent implements OnInit {
     
     this.statsForm.get('age')?.setValue(selectedAge);
     this.applyAgeEffects(selectedAge);
+
+    if (this.pendingDeduction) {
+      const controlObj: { [stat: string]: any } = {};
+      this.pendingDeduction.stats.forEach((stat: string) => {
+        controlObj[stat] = [this.pendingDeduction?.deductions?.[stat], Validators.required]
+      });
+      this.ageDeductionForm = this.fb.group(controlObj);
+
+      this.ageDeductionForm.valueChanges.subscribe((value) => {
+        // TODO: apply the change to the deduction, update the remaining points
+      });
+    }
     
     // Ensure derived attributes are recalculated after age effects
     this.recalculateDerivedAttributes();
@@ -263,17 +285,28 @@ export class StatsEditorComponent implements OnInit {
     });
   }
   
-  applyStatDeduction(stat: string): void {
-    if (!this.character) return;
+  applyStatDeduction(stat: string, amount?: number): void {
+    if (!this.character || !this.pendingDeduction) return;
     
-    this.characterService.applyStatDeduction(this.character, stat);
-    this.pendingDeduction = null;
+    // If amount is specified, use it; otherwise use all remaining points
+    const deductionAmount = amount !== undefined ? 
+      amount : this.pendingDeduction.remainingPoints;
     
-    // Update form with the new values
-    this.statsForm.get(stat)?.setValue(this.character[stat as keyof Character]);
-    
-    // Recalculate derived attributes
-    this.recalculateDerivedAttributes();
+    if (deductionAmount && deductionAmount > 0) {
+      this.characterService.applyStatDeduction(this.character, stat, deductionAmount);
+      
+      // Update pendingDeduction from service
+      this.pendingDeduction = this.characterService.getPendingDeduction();
+      
+      // Update form with the new values
+      this.statsForm.get(stat)?.setValue(this.getCurrentStatValue(stat));
+      
+      // Reset the input field after applying
+      this.deductionAmounts[stat] = 0;
+      
+      // Recalculate derived attributes
+      this.recalculateDerivedAttributes();
+    }
   }
 
   updateCharacterFromForm(): void {
@@ -307,5 +340,57 @@ export class StatsEditorComponent implements OnInit {
       this.updateCharacterFromForm();
       this.router.navigate(['/occupation']);
     }
+  }
+  
+  getRemainingDeductionPoints(): number {
+    if (!this.pendingDeduction || this.pendingDeduction.remainingPoints === undefined) {
+      return 0;
+    }
+    return this.pendingDeduction.remainingPoints;
+  }
+  
+  getDeductionPerStat(stat: string): number {
+    if (!this.pendingDeduction || !this.pendingDeduction.deductions) {
+      return 0;
+    }
+    return this.pendingDeduction.deductions[stat] || 0;
+  }
+  
+  applyAllDeductions(): void {
+    if (!this.character || !this.pendingDeduction) return;
+    
+    for (const stat of this.pendingDeduction.stats) {
+      const amount = this.deductionAmounts[stat];
+      if (amount && amount > 0) {
+        this.applyStatDeduction(stat, amount);
+      }
+    }
+  }
+  
+  validateDeductionAmount(stat: string, value: number): boolean {
+    if (!this.character || !this.pendingDeduction) return false;
+    
+    // Check if the value is positive
+    if (value <= 0) return false;
+    
+    // Check if the value is less than or equal to remaining points
+    if (value > this.getRemainingDeductionPoints()) return false;
+    
+    // Check if deduction would reduce stat below minimum (15)
+    const currentStat = this.getCurrentStatValue(stat);
+    if (currentStat - value < 15) return false;
+    
+    return true;
+  }
+  
+  onDeductionAmountChange(stat: string, event: any): void {
+    const value = parseInt(event.target.value, 10);
+    if (!isNaN(value)) {
+      this.deductionAmounts[stat] = value;
+    }
+  }
+
+  getCurrentStatValue(stat: string): number {
+    return this.character?.[stat as keyof Character] as number;
   }
 }
