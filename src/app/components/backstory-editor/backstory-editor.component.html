@@ -7,7 +7,8 @@
         <h2>Develop Your Investigator's Backstory</h2>
         <p>Every investigator has personal beliefs and connections that make them unique. These elements will help define your character's personality and motivations.</p>
         <div class="randomize-all">
-          <button mat-raised-button color="accent" (click)="randomizeAll()">
+          <button mat-raised-button color="accent" (click)="randomizeAll()" 
+                  matTooltip="Randomly generate all backstory elements at once">
             <mat-icon>casino</mat-icon> Randomize All
           </button>
         </div>
@@ -21,7 +22,8 @@
       <mat-card-content>
         <div class="backstory-header">
           <h3>Personal Ideology or Beliefs</h3>
-          <button mat-mini-fab color="primary" (click)="randomIdeology()">
+          <button mat-mini-fab color="primary" (click)="randomIdeology()" 
+                  matTooltip="Roll for a random personal ideology">
             <mat-icon>casino</mat-icon>
           </button>
         </div>
@@ -46,7 +48,8 @@
       <mat-card-content>
         <div class="backstory-header">
           <h3>Significant Person</h3>
-          <button mat-mini-fab color="primary" (click)="randomSignificantPerson()">
+          <button mat-mini-fab color="primary" (click)="randomSignificantPerson()" 
+                  matTooltip="Roll for a random significant person in your character's life">
             <mat-icon>casino</mat-icon>
           </button>
         </div>
@@ -82,7 +85,8 @@
       <mat-card-content>
         <div class="backstory-header">
           <h3>Meaningful Location</h3>
-          <button mat-mini-fab color="primary" (click)="randomMeaningfulLocation()">
+          <button mat-mini-fab color="primary" (click)="randomMeaningfulLocation()" 
+                  matTooltip="Roll for a random meaningful place">
             <mat-icon>casino</mat-icon>
           </button>
         </div>
@@ -107,7 +111,8 @@
       <mat-card-content>
         <div class="backstory-header">
           <h3>Treasured Possession</h3>
-          <button mat-mini-fab color="primary" (click)="randomTreasuredPossession()">
+          <button mat-mini-fab color="primary" (click)="randomTreasuredPossession()" 
+                  matTooltip="Roll for a random treasured item">
             <mat-icon>casino</mat-icon>
           </button>
         </div>
@@ -132,7 +137,8 @@
       <mat-card-content>
         <div class="backstory-header">
           <h3>Character Trait</h3>
-          <button mat-mini-fab color="primary" (click)="randomTrait()">
+          <button mat-mini-fab color="primary" (click)="randomTrait()" 
+                  matTooltip="Roll for a random personality trait">
             <mat-icon>casino</mat-icon>
           </button>
         </div>

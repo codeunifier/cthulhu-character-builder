@@ -45,7 +45,8 @@
       <mat-card-content>
         <div class="space-between">
           <h2>Characteristics</h2>
-          <button mat-raised-button color="primary" (click)="rollAllStats()">
+          <button mat-raised-button color="primary" (click)="rollAllStats()" 
+                  matTooltip="Roll for all characteristics at once (using appropriate dice for each stat)">
             <mat-icon>casino</mat-icon> Roll All Stats
           </button>
         </div>
@@ -55,7 +56,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>STR (Strength)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('str')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('str')"
+                      matTooltip="Roll 3D6 × 5 for STR">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -72,7 +74,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>CON (Constitution)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('con')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('con')" 
+                      matTooltip="Roll 3D6 × 5 for CON">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -89,7 +92,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>SIZ (Size)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('siz')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('siz')"
+                      matTooltip="Roll 2D6+6 × 5 for SIZ">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -106,7 +110,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>DEX (Dexterity)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('dex')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('dex')"
+                      matTooltip="Roll 3D6 × 5 for DEX">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -123,7 +128,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>APP (Appearance)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('app')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('app')"
+                      matTooltip="Roll 3D6 × 5 for APP">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -140,7 +146,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>INT (Intelligence)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('int')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('int')"
+                      matTooltip="Roll 2D6+6 × 5 for INT">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -157,7 +164,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>POW (Power)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('pow')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('pow')"
+                      matTooltip="Roll 3D6 × 5 for POW">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -174,7 +182,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>EDU (Education)</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('edu')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('edu')"
+                      matTooltip="Roll 2D6+6 × 5 for EDU">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>
@@ -191,7 +200,8 @@
           <div class="stat-card">
             <div class="stat-header">
               <h3>Luck</h3>
-              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('luck')">
+              <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat('luck')"
+                      matTooltip="Roll 3D6 × 5 for Luck">
                 <mat-icon>casino</mat-icon>
               </button>
             </div>

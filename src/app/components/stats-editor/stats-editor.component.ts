@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { Character, PendingDeduction } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
@@ -28,7 +29,8 @@ import { DiceService } from '../../services/dice.service';
     MatIconModule,
     MatSelectModule,
     MatSliderModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ],
   templateUrl: './stats-editor.component.html',
   styleUrl: './stats-editor.component.scss'

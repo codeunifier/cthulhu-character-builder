@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { Character } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
@@ -28,7 +29,8 @@ import { DiceService } from '../../services/dice.service';
     MatSelectModule,
     MatDividerModule,
     MatIconModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatTooltipModule
   ],
   templateUrl: './backstory-editor.component.html',
   styleUrl: './backstory-editor.component.scss'
