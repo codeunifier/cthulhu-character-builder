@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Character, DEFAULT_SKILLS, Occupation, PendingDeduction, Skill } from '../models/character.model';
+import { Character, DEFAULT_SKILLS, Occupation, Skill, StatModifiers } from '../models/character.model';
 import { DiceService } from './dice.service';
 
 @Injectable({
@@ -8,7 +8,16 @@ import { DiceService } from './dice.service';
 })
 export class CharacterService {
   private characterSubject = new BehaviorSubject<Character | null>(null);
-  private pendingDeduction: PendingDeduction | null = null;
+  // Track age deduction information
+  private ageDeductionInfo: {
+    totalPoints: number;
+    stats: string[];
+    usedPoints: { [stat: string]: number };
+  } = {
+    totalPoints: 0,
+    stats: [],
+    usedPoints: {}
+  };
 
   constructor(private diceService: DiceService) {}
 
@@ -37,6 +46,20 @@ export class CharacterService {
       pow: stats.pow,
       edu: stats.edu,
       luck: stats.luck,
+      // Store the original rolled stats
+      baseStats: { ...stats },
+      // Initialize stat modifiers
+      statModifiers: {
+        str: [],
+        con: [],
+        siz: [],
+        dex: [],
+        app: [],
+        int: [],
+        pow: [],
+        edu: [],
+        luck: []
+      },
       damageBonus: 'None',
       build: 0,
       hp: 0,
@@ -94,72 +117,111 @@ export class CharacterService {
     
     character.age = age;
     
+    // Clear all age-related stat modifiers
+    const statsToReset = ['str', 'con', 'siz', 'dex', 'app', 'int', 'pow', 'edu', 'luck'];
+    statsToReset.forEach(stat => {
+      if (character.statModifiers && character.statModifiers[stat as keyof StatModifiers]) {
+        character.statModifiers[stat as keyof StatModifiers] = character.statModifiers[stat as keyof StatModifiers]?.filter(
+          mod => mod.source !== 'Age Effect'
+        );
+      }
+    });
+    
+    // Reset age deduction info
+    this.ageDeductionInfo = {
+      totalPoints: 0,
+      stats: [],
+      usedPoints: {}
+    };
+    
     if (age >= 15 && age <= 19) {
-      character.str -= 5;
-      character.siz -= 5;
-      character.edu -= 5;
+      // Add young age modifiers - these are applied automatically
+      this.addOrUpdateStatModifier(character, 'edu', -5, 'Age Effect');
+      
       // Roll Luck twice and use higher value
       const luck1 = this.diceService.roll3d6() * 5;
       const luck2 = this.diceService.roll3d6() * 5;
       character.luck = Math.max(luck1, luck2);
+
+      this.ageDeductionInfo = {
+        totalPoints: 5,
+        stats: ['str', 'siz'],
+        usedPoints: { 'str': 0, 'siz': 0 }
+      };
     } 
     else if (age >= 20 && age <= 39) {
+      // Improvement check - applied automatically
       this.makeImprovementCheck(character, 'edu', 1);
     } 
     else if (age >= 40 && age <= 49) {
+      // Automatic EDU improvement check
       this.makeImprovementCheck(character, 'edu', 2);
-      // Deduct 5 points from STR, CON, or DEX (user can distribute)
-      this.pendingDeduction = { 
+      
+      // Automatic APP penalty
+      this.addOrUpdateStatModifier(character, 'app', -5, 'Age Effect');
+      
+      // Set age deduction info for STR, CON, DEX that player needs to allocate
+      this.ageDeductionInfo = { 
         stats: ['str', 'con', 'dex'], 
-        points: 5,
-        remainingPoints: 5,
-        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+        totalPoints: 5,
+        usedPoints: { 'str': 0, 'con': 0, 'dex': 0 } 
       };
-      character.app -= 5;
     } 
     else if (age >= 50 && age <= 59) {
+      // Automatic EDU improvement check
       this.makeImprovementCheck(character, 'edu', 3);
-      // Deduct 10 points from STR, CON, or DEX (user can distribute)
-      this.pendingDeduction = { 
+      
+      // Automatic APP penalty
+      this.addOrUpdateStatModifier(character, 'app', -10, 'Age Effect');
+      
+      // Set age deduction info for STR, CON, DEX that player needs to allocate
+      this.ageDeductionInfo = { 
         stats: ['str', 'con', 'dex'], 
-        points: 10,
-        remainingPoints: 10,
-        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+        totalPoints: 10,
+        usedPoints: { 'str': 0, 'con': 0, 'dex': 0 } 
       };
-      character.app -= 10;
     } 
     else if (age >= 60 && age <= 69) {
+      // Automatic EDU improvement check
       this.makeImprovementCheck(character, 'edu', 4);
-      // Deduct 20 points from STR, CON, or DEX (user can distribute)
-      this.pendingDeduction = { 
+      
+      // Automatic APP penalty
+      this.addOrUpdateStatModifier(character, 'app', -15, 'Age Effect');
+      
+      // Set age deduction info for STR, CON, DEX that player needs to allocate
+      this.ageDeductionInfo = { 
         stats: ['str', 'con', 'dex'], 
-        points: 20,
-        remainingPoints: 20,
-        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+        totalPoints: 20,
+        usedPoints: { 'str': 0, 'con': 0, 'dex': 0 } 
       };
-      character.app -= 15;
     } 
     else if (age >= 70 && age <= 79) {
+      // Automatic EDU improvement check
       this.makeImprovementCheck(character, 'edu', 4);
-      // Deduct 40 points from STR, CON, or DEX (user can distribute)
-      this.pendingDeduction = { 
+      
+      // Automatic APP penalty
+      this.addOrUpdateStatModifier(character, 'app', -20, 'Age Effect');
+      
+      // Set age deduction info for STR, CON, DEX that player needs to allocate
+      this.ageDeductionInfo = { 
         stats: ['str', 'con', 'dex'], 
-        points: 40,
-        remainingPoints: 40,
-        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+        totalPoints: 40,
+        usedPoints: { 'str': 0, 'con': 0, 'dex': 0 } 
       };
-      character.app -= 20;
     } 
     else if (age >= 80 && age <= 89) {
+      // Automatic EDU improvement check
       this.makeImprovementCheck(character, 'edu', 4);
-      // Deduct 80 points from STR, CON, or DEX (user can distribute)
-      this.pendingDeduction = { 
+      
+      // Automatic APP penalty
+      this.addOrUpdateStatModifier(character, 'app', -25, 'Age Effect');
+      
+      // Set age deduction info for STR, CON, DEX that player needs to allocate
+      this.ageDeductionInfo = { 
         stats: ['str', 'con', 'dex'], 
-        points: 80,
-        remainingPoints: 80,
-        deductions: { 'str': 0, 'con': 0, 'dex': 0 } 
+        totalPoints: 80,
+        usedPoints: { 'str': 0, 'con': 0, 'dex': 0 } 
       };
-      character.app -= 25;
     }
     
     // Recalculate derived stats
@@ -167,24 +229,107 @@ export class CharacterService {
     this.updateDerivedSkills(character);
   }
 
-  getPendingDeduction(): PendingDeduction | null {
-    return this.pendingDeduction;
-  }
-
-  applyStatDeduction(character: Character, stat: string, amount: number): void {
-    if (!this.pendingDeduction || !this.pendingDeduction.remainingPoints) return;
-    
-    // Validate amount
-    if (amount <= 0) return;
-    if (amount > this.pendingDeduction.remainingPoints) {
-      amount = this.pendingDeduction.remainingPoints;
+  // Helper method to add a stat modifier
+  addStatModifier(character: Character, stat: string, value: number, source: string): void {
+    if (!character.statModifiers) {
+      character.statModifiers = {};
     }
     
-    // Only apply deduction to the allowed stats
-    if (this.pendingDeduction.stats.includes(stat)) {
+    if (!character.statModifiers[stat as keyof StatModifiers]) {
+      character.statModifiers[stat as keyof StatModifiers] = [];
+    }
+    
+    // Add the modifier
+    character.statModifiers[stat as keyof StatModifiers]?.push({ source, value });
+    
+    // Apply the modifier directly to the stat
+    (character[stat as keyof Character] as number) += value;
+    
+    // Ensure stats don't go below minimum values
+    const minValue = ['siz', 'int', 'edu'].includes(stat) ? 40 : 15;
+    if ((character[stat as keyof Character] as number) < minValue) {
+      (character[stat as keyof Character] as number) = minValue;
+    }
+  }
+
+  // Methods for handling age-related stat deductions
+  getAgeDeductionInfo(): {totalPoints: number; stats: string[]; usedPoints: {[stat: string]: number}} {
+    return this.ageDeductionInfo;
+  }
+  
+  getAgeDeductionStats(): string[] {
+    return this.ageDeductionInfo.stats;
+  }
+  
+  getAgeDeductionTotalPoints(): number {
+    return this.ageDeductionInfo.totalPoints;
+  }
+  
+  getAgeDeductionUsedPoints(): {[stat: string]: number} {
+    return this.ageDeductionInfo.usedPoints;
+  }
+  
+  getAgeDeductionRemainingPoints(): number {
+    const totalUsed = Object.values(this.ageDeductionInfo.usedPoints).reduce((sum, val) => sum + val, 0);
+    return this.ageDeductionInfo.totalPoints - totalUsed;
+  }
+  
+  getAgeDeductionUsedForStat(stat: string): number {
+    return this.ageDeductionInfo.usedPoints[stat] || 0;
+  }
+  
+  applyStatDeduction(character: Character, stat: string, amount: number): void {
+    // Validate amount
+    if (amount === 0) return;
+    
+    const remainingPoints = this.getAgeDeductionRemainingPoints();
+    
+    // If adding points (negative deduction) or removing points (positive deduction)
+    if (amount < 0) {
+      // This is removing a previous deduction (adding points back)
+      const currentDeduction = this.ageDeductionInfo.usedPoints[stat] || 0;
+      // Cannot remove more than was previously deducted
+      const actualAmount = Math.max(amount, -currentDeduction);
+      
+      if (actualAmount === 0) return; // Nothing to change
+      
+      // Remove the previous modifier
+      if (character.statModifiers && character.statModifiers[stat as keyof StatModifiers]) {
+        // Find the age effect modifier
+        const agePenaltyIndex = character.statModifiers[stat as keyof StatModifiers]!.findIndex(
+          mod => mod.source === 'Age Effect'
+        );
+        
+        if (agePenaltyIndex >= 0) {
+          // Update the existing modifier
+          character.statModifiers[stat as keyof StatModifiers]![agePenaltyIndex].value -= actualAmount;
+          
+          // If modifier is now zero, remove it
+          if (character.statModifiers[stat as keyof StatModifiers]![agePenaltyIndex].value === 0) {
+            character.statModifiers[stat as keyof StatModifiers]!.splice(agePenaltyIndex, 1);
+          }
+        }
+      }
+      
+      // Update the stat value
+      (character[stat as keyof Character] as number) -= actualAmount;
+      
+      // Update tracking
+      this.ageDeductionInfo.usedPoints[stat] = (this.ageDeductionInfo.usedPoints[stat] || 0) + actualAmount;
+      
+    } else if (amount > 0) {
+      // Adding a deduction (reducing character stat)
+      // Validate we have enough points to deduct
+      if (amount > remainingPoints) {
+        amount = remainingPoints;
+      }
+      
+      if (amount <= 0) return; // Nothing to deduct
+      
       // Make sure we don't reduce below minimum (15)
       const minAllowed = 15;
-      const maxDeduction = (character[stat as keyof Character] as number) - minAllowed;
+      const currentValue = (character[stat as keyof Character] as number);
+      const maxDeduction = currentValue - minAllowed;
       
       if (maxDeduction <= 0) {
         return; // Cannot deduct any further
@@ -192,31 +337,49 @@ export class CharacterService {
       
       // Apply the deduction but don't go below minimum
       const actualDeduction = Math.min(amount, maxDeduction);
-      (character[stat as keyof Character] as number) -= actualDeduction;
+      
+      // Add or update this deduction as a stat modifier
+      this.addOrUpdateStatModifier(character, stat, -actualDeduction, 'Age Effect');
       
       // Update tracking
-      if (this.pendingDeduction.deductions) {
-        this.pendingDeduction.deductions[stat] += actualDeduction;
-      }
-      
-      this.pendingDeduction.remainingPoints -= actualDeduction;
-      
-      // If no more points to deduct, clear the pending deduction
-      if (this.pendingDeduction.remainingPoints <= 0) {
-        this.pendingDeduction = null;
-      }
-      
-      this.updateDerivedAttributes(character);
-      this.updateCharacter(character);
+      this.ageDeductionInfo.usedPoints[stat] = (this.ageDeductionInfo.usedPoints[stat] || 0) + actualDeduction;
     }
+    
+    this.updateDerivedAttributes(character);
+    this.updateCharacter(character);
   }
   
-  clearStatDeductions(): void {
-    this.pendingDeduction = null;
-  }
-  
-  getRemainingDeductionPoints(): number {
-    return this.pendingDeduction?.remainingPoints || 0;
+  // Helper to add or update a stat modifier with the same source
+  private addOrUpdateStatModifier(character: Character, stat: string, value: number, source: string): void {
+    if (!character.statModifiers) {
+      character.statModifiers = {};
+    }
+    
+    if (!character.statModifiers[stat as keyof StatModifiers]) {
+      character.statModifiers[stat as keyof StatModifiers] = [];
+    }
+    
+    // Check if modifier with same source already exists
+    const existingIndex = character.statModifiers[stat as keyof StatModifiers]!.findIndex(
+      mod => mod.source === source
+    );
+    
+    if (existingIndex >= 0) {
+      // Add to existing modifier
+      character.statModifiers[stat as keyof StatModifiers]![existingIndex].value += value;
+    } else {
+      // Add new modifier
+      character.statModifiers[stat as keyof StatModifiers]!.push({ source, value });
+    }
+    
+    // Apply the change to the actual stat
+    (character[stat as keyof Character] as number) += value;
+    
+    // Ensure stats don't go below minimum values
+    const minValue = ['siz', 'int', 'edu'].includes(stat) ? 40 : 15;
+    if ((character[stat as keyof Character] as number) < minValue) {
+      (character[stat as keyof Character] as number) = minValue;
+    }
   }
 
   makeImprovementCheck(character: Character, stat: string, times: number): void {
@@ -230,7 +393,7 @@ export class CharacterService {
       const roll = this.diceService.roll1d100();
       if (roll > character[stat]) {
         const improvement = this.diceService.roll1d10();
-        character[stat] = character[stat] + improvement;
+        this.addStatModifier(character, stat, improvement, 'Improvement Check');
       }
     }
   }
@@ -447,8 +610,55 @@ export class CharacterService {
   }
 
   private resetCharacterToBaseStats(character: Character): void {
-    // This assumes you've stored the original values when creating the character
-    // You would need to implement this based on how you're tracking the original stats
+    if (!character.baseStats) {
+      // If baseStats doesn't exist, create it from current stats
+      character.baseStats = {
+        str: character.str,
+        con: character.con,
+        siz: character.siz,
+        dex: character.dex,
+        app: character.app,
+        int: character.int,
+        pow: character.pow,
+        edu: character.edu,
+        luck: character.luck
+      };
+    }
+    
+    // Initialize modifiers if they don't exist
+    if (!character.statModifiers) {
+      character.statModifiers = {
+        str: [],
+        con: [],
+        siz: [],
+        dex: [],
+        app: [],
+        int: [],
+        pow: [],
+        edu: [],
+        luck: []
+      };
+    }
+    
+    // Reset stats to base values
+    character.str = character.baseStats.str;
+    character.con = character.baseStats.con;
+    character.siz = character.baseStats.siz;
+    character.dex = character.baseStats.dex;
+    character.app = character.baseStats.app;
+    character.int = character.baseStats.int;
+    character.pow = character.baseStats.pow;
+    character.edu = character.baseStats.edu;
+    character.luck = character.baseStats.luck;
+    
+    // Clear all age-related modifiers
+    Object.keys(character.statModifiers).forEach(stat => {
+      if (character.statModifiers) {
+        character.statModifiers[stat as keyof StatModifiers] = character.statModifiers[stat as keyof StatModifiers]?.filter(
+          mod => mod.source !== 'Age Effect'
+        );
+      }
+    });
   }
 
   saveCharacter(character: Character): void {

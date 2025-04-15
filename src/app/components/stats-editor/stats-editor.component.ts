@@ -12,9 +12,19 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { Character, PendingDeduction } from '../../models/character.model';
+import { Character, PendingDeduction, StatModifier, StatModifiers, Stats } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { DiceService } from '../../services/dice.service';
+import { StatCardComponent } from './stat-card/stat-card.component';
+import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/age-effects-card.component";
+
+export interface AgeRange {
+  id: number;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+}
 
 @Component({
   selector: 'app-stats-editor',
@@ -31,17 +41,17 @@ import { DiceService } from '../../services/dice.service';
     MatSelectModule,
     MatSliderModule,
     MatDividerModule,
-    MatTooltipModule
-  ],
+    MatTooltipModule,
+    StatCardComponent,
+    AgeEffectsCardComponent
+],
   templateUrl: './stats-editor.component.html',
   styleUrl: './stats-editor.component.scss'
 })
 export class StatsEditorComponent implements OnInit {
   statsForm!: FormGroup;
-  ageDeductionForm?: FormGroup;
   character: Character | null = null;
   pendingDeduction: PendingDeduction | null = null;
-  deductionAmounts: { [key: string]: number } = {};
   
   // Derived attributes
   derivedHP: number = 0;
@@ -49,15 +59,16 @@ export class StatsEditorComponent implements OnInit {
   derivedBuild: number = 0;
   derivedMovementRate: number = 8;
   
-  ageRanges = [
-    { label: '15-19 (Young)', value: 17 },
-    { label: '20-39 (Adult)', value: 30 },
-    { label: '40-49 (Middle-aged)', value: 45 },
-    { label: '50-59 (Middle-aged)', value: 55 },
-    { label: '60-69 (Older)', value: 65 },
-    { label: '70-79 (Old)', value: 75 },
-    { label: '80-89 (Very Old)', value: 85 }
+  ageRanges: Array<AgeRange> = [
+    { id: 1, label: '15-19 (Young)', value: 17, min: 15, max: 19 },
+    { id: 2, label: '20-39 (Adult)', value: 30, min: 20, max: 39 },
+    { id: 3, label: '40-49 (Middle-aged)', value: 45, min: 40, max: 49 },
+    { id: 4, label: '50-59 (Middle-aged)', value: 55, min: 50, max: 59 },
+    { id: 5, label: '60-69 (Older)', value: 65, min: 60, max: 69 },
+    { id: 6, label: '70-79 (Old)', value: 75, min: 70, max: 79 },
+    { id: 7, label: '80-89 (Very Old)', value: 85, min: 80, max: 89 },
   ];
+  selectedAgeRange?: AgeRange;
 
   constructor(
     private fb: FormBuilder,
@@ -70,18 +81,18 @@ export class StatsEditorComponent implements OnInit {
     this.characterService.getCharacter().subscribe(character => {
       this.character = character;
       if (this.character) {
+        this.initializeAgeRange();
         this.initForm();
       } else {
         this.router.navigate(['/character-builder']);
       }
     });
-    
-    this.pendingDeduction = this.characterService.getPendingDeduction();
-    
-    // Initialize deduction amounts for each stat if we have pending deductions
-    if (this.pendingDeduction && this.pendingDeduction.stats) {
-      this.pendingDeduction.stats.forEach(stat => {
-        this.deductionAmounts[stat] = 0;
+  }
+
+  private initializeAgeRange(): void {
+    if (!this.selectedAgeRange) {
+      this.selectedAgeRange = this.ageRanges.find((range: AgeRange) => {
+        return this.character!.age >= range.min && this.character!.age <= range.max;
       });
     }
   }
@@ -91,16 +102,8 @@ export class StatsEditorComponent implements OnInit {
     
     this.statsForm = this.fb.group({
       name: [this.character.name, Validators.required],
-      age: [this.character.age, [Validators.required, Validators.min(15), Validators.max(89)]],
-      str: [this.character.str, [Validators.required, Validators.min(15), Validators.max(90)]],
-      con: [this.character.con, [Validators.required, Validators.min(15), Validators.max(90)]],
-      siz: [this.character.siz, [Validators.required, Validators.min(40), Validators.max(90)]],
-      dex: [this.character.dex, [Validators.required, Validators.min(15), Validators.max(90)]],
-      app: [this.character.app, [Validators.required, Validators.min(15), Validators.max(90)]],
-      int: [this.character.int, [Validators.required, Validators.min(40), Validators.max(90)]],
-      pow: [this.character.pow, [Validators.required, Validators.min(15), Validators.max(90)]],
-      edu: [this.character.edu, [Validators.required, Validators.min(40), Validators.max(90)]],
-      luck: [this.character.luck, [Validators.required, Validators.min(15), Validators.max(90)]]
+      age: [this.character.age, [Validators.required, Validators.min(15), Validators.max(89)]]
+      // No longer need form controls for characteristics - they are read-only displays
     });
     
     // Update derived attributes based on initial values
@@ -113,16 +116,14 @@ export class StatsEditorComponent implements OnInit {
   }
   
   recalculateDerivedAttributes(): void {
-    if (!this.statsForm) return;
+    if (!this.character) return;
     
-    const formValues = this.statsForm.value;
-    
-    // Ensure we have valid numeric values to work with
-    const str = Number(formValues.str) || 0;
-    const con = Number(formValues.con) || 0;
-    const siz = Number(formValues.siz) || 0;
-    const dex = Number(formValues.dex) || 0;
-    const age = Number(formValues.age) || 20;
+    // Get age from form, other stats directly from character
+    const age = this.statsForm ? Number(this.statsForm.get('age')?.value) || 20 : 20;
+    const str = this.character.str;
+    const con = this.character.con;
+    const siz = this.character.siz;
+    const dex = this.character.dex;
     
     // Calculate Hit Points
     this.derivedHP = Math.floor((con + siz) / 10);
@@ -203,110 +204,51 @@ export class StatsEditorComponent implements OnInit {
     }
   }
 
-  rollStat(statName: string): void {
-    if (!this.character || !this.statsForm) return;
-    
-    let value: number;
-    if (['siz', 'int', 'edu'].includes(statName)) {
-      value = (this.diceService.roll2d6() + 6) * 5;
-    } else {
-      value = this.diceService.roll3d6() * 5;
-    }
-    
-    this.statsForm.get(statName)?.setValue(value);
-    // Note: No need to explicitly call recalculateDerivedAttributes() here
-    // as the form valueChanges subscription will handle that automatically
-  }
-
   rollAllStats(): void {
     if (!this.character) return;
     
+    // Get new base stats
     const stats = this.diceService.generateBaseStats();
     
-    this.statsForm.patchValue({
-      str: stats.str,
-      con: stats.con,
-      siz: stats.siz,
-      dex: stats.dex,
-      app: stats.app,
-      int: stats.int,
-      pow: stats.pow,
-      edu: stats.edu,
-      luck: stats.luck
-    });
-  }
-
-  onAgeChange(event: any): void {
-    const selectedAge = event.target.value;
-    if (!this.character || !selectedAge) return;
+    // Save as base stats
+    this.character.baseStats = { ...stats };
     
-    this.statsForm.get('age')?.setValue(selectedAge);
-    this.applyAgeEffects(selectedAge);
-
-    if (this.pendingDeduction) {
-      const controlObj: { [stat: string]: any } = {};
-      this.pendingDeduction.stats.forEach((stat: string) => {
-        controlObj[stat] = [this.pendingDeduction?.deductions?.[stat], Validators.required]
-      });
-      this.ageDeductionForm = this.fb.group(controlObj);
-
-      this.ageDeductionForm.valueChanges.subscribe((value) => {
-        // TODO: apply the change to the deduction, update the remaining points
+    // Update actual stats with base values first
+    this.character.str = stats.str;
+    this.character.con = stats.con;
+    this.character.siz = stats.siz;
+    this.character.dex = stats.dex;
+    this.character.app = stats.app;
+    this.character.int = stats.int;
+    this.character.pow = stats.pow;
+    this.character.edu = stats.edu;
+    this.character.luck = stats.luck;
+    
+    // Clear any existing modifiers
+    if (this.character.statModifiers) {
+      Object.keys(this.character.statModifiers).forEach(stat => {
+        if (this.character && this.character.statModifiers) {
+          this.character.statModifiers[stat as keyof StatModifiers] = [];
+        }
       });
     }
     
-    // Ensure derived attributes are recalculated after age effects
+    // Apply age effects to add appropriate modifiers
+    this.characterService.applyAgeEffects(this.character, this.character.age);
+    
+    // Recalculate derived attributes
     this.recalculateDerivedAttributes();
   }
 
-  applyAgeEffects(age: number): void {
-    if (!this.character) return;
+  onAgeRangeChange(event: any): void {
+    const ageRangeId: number = parseInt(event.target.value);
+    this.selectedAgeRange = this.ageRanges.find((range) => range.id === ageRangeId)!;
     
-    // Update character with current form values
-    this.updateCharacterFromForm();
-    
-    // Apply age effects
-    this.characterService.applyAgeEffects(this.character, age);
-    
-    // Check for pending deductions
-    this.pendingDeduction = this.characterService.getPendingDeduction();
-    
-    // Update form with the new values
-    this.statsForm.patchValue({
-      str: this.character.str,
-      con: this.character.con,
-      siz: this.character.siz,
-      dex: this.character.dex,
-      app: this.character.app,
-      int: this.character.int,
-      pow: this.character.pow,
-      edu: this.character.edu,
-      luck: this.character.luck
-    });
-  }
-  
-  applyStatDeduction(stat: string, amount?: number): void {
-    if (!this.character || !this.pendingDeduction) return;
-    
-    // If amount is specified, use it; otherwise use all remaining points
-    const deductionAmount = amount !== undefined ? 
-      amount : this.pendingDeduction.remainingPoints;
-    
-    if (deductionAmount && deductionAmount > 0) {
-      this.characterService.applyStatDeduction(this.character, stat, deductionAmount);
-      
-      // Update pendingDeduction from service
-      this.pendingDeduction = this.characterService.getPendingDeduction();
-      
-      // Update form with the new values
-      this.statsForm.get(stat)?.setValue(this.getCurrentStatValue(stat));
-      
-      // Reset the input field after applying
-      this.deductionAmounts[stat] = 0;
-      
-      // Recalculate derived attributes
-      this.recalculateDerivedAttributes();
+    if (this.selectedAgeRange) {
+      this.statsForm.get('age')?.setValue(this.selectedAgeRange.value);
     }
+
+    this.characterService.applyAgeEffects(this.character!, this.selectedAgeRange!.value);
   }
 
   updateCharacterFromForm(): void {
@@ -314,19 +256,11 @@ export class StatsEditorComponent implements OnInit {
     
     const formValues = this.statsForm.value;
     
+    // Only update name and age from form
     this.character.name = formValues.name;
     this.character.age = formValues.age;
-    this.character.str = formValues.str;
-    this.character.con = formValues.con;
-    this.character.siz = formValues.siz;
-    this.character.dex = formValues.dex;
-    this.character.app = formValues.app;
-    this.character.int = formValues.int;
-    this.character.pow = formValues.pow;
-    this.character.edu = formValues.edu;
-    this.character.luck = formValues.luck;
     
-    // Also update derived attributes directly from our calculated values
+    // Update derived attributes directly from our calculated values
     this.character.hp = this.derivedHP;
     this.character.damageBonus = this.derivedDamageBonus;
     this.character.build = this.derivedBuild;
@@ -341,56 +275,37 @@ export class StatsEditorComponent implements OnInit {
       this.router.navigate(['/occupation']);
     }
   }
-  
-  getRemainingDeductionPoints(): number {
-    if (!this.pendingDeduction || this.pendingDeduction.remainingPoints === undefined) {
-      return 0;
-    }
-    return this.pendingDeduction.remainingPoints;
-  }
-  
-  getDeductionPerStat(stat: string): number {
-    if (!this.pendingDeduction || !this.pendingDeduction.deductions) {
-      return 0;
-    }
-    return this.pendingDeduction.deductions[stat] || 0;
-  }
-  
-  applyAllDeductions(): void {
-    if (!this.character || !this.pendingDeduction) return;
-    
-    for (const stat of this.pendingDeduction.stats) {
-      const amount = this.deductionAmounts[stat];
-      if (amount && amount > 0) {
-        this.applyStatDeduction(stat, amount);
-      }
-    }
-  }
-  
-  validateDeductionAmount(stat: string, value: number): boolean {
-    if (!this.character || !this.pendingDeduction) return false;
-    
-    // Check if the value is positive
-    if (value <= 0) return false;
-    
-    // Check if the value is less than or equal to remaining points
-    if (value > this.getRemainingDeductionPoints()) return false;
-    
-    // Check if deduction would reduce stat below minimum (15)
-    const currentStat = this.getCurrentStatValue(stat);
-    if (currentStat - value < 15) return false;
-    
-    return true;
-  }
-  
-  onDeductionAmountChange(stat: string, event: any): void {
-    const value = parseInt(event.target.value, 10);
-    if (!isNaN(value)) {
-      this.deductionAmounts[stat] = value;
-    }
+
+  onAgeDeductionChange(ageDeductionInfo: AgeDeductionInfo): void {
+    this.recalculateDerivedAttributes();
   }
 
   getCurrentStatValue(stat: string): number {
     return this.character?.[stat as keyof Character] as number;
+  }
+
+  onStatRoll(event: { stat: keyof Stats, value: number }): void {
+    if (!this.character) return;
+
+    // Update the base stat
+    this.character.baseStats[event.stat] = event.value;
+
+    // Apply the new base value
+    this.character[event.stat] = event.value;
+
+    // Reapply any modifiers
+    if (this.character.statModifiers && this.character.statModifiers[event.stat]) {
+      this.character.statModifiers[event.stat]?.forEach((mod: StatModifier) => {
+        if (this.character?.[event.stat]) {
+          this.character[event.stat] += mod.value;
+        }
+      });
+    }
+    
+    // Recalculate derived attributes
+    this.recalculateDerivedAttributes();
+    
+    // Update character in service
+    this.characterService.updateCharacter(this.character);
   }
 }

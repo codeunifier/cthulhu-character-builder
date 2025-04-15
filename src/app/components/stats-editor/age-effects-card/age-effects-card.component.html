@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-content>
+    <h2>Age Effects</h2>
+    <p>Your character's age may apply certain bonuses or penalties. Typically the older you are, the more educated you become, but at the cost of strength or dexterity.</p>
+    
+    @if (!ageRange) {
+      <p>Please select an age range above to determine bonuses and penalties.</p>
+    }
+    @else {
+      @if (isYoung) {
+        <p>5 points have been <span class="color-red">deducted</span> from EDU. Your LUCK has been rerolled with advantage.</p>
+      }
+      @else {
+        <p>An improvement check has already been made to your EDU stat.</p>
+
+        @if (eduImprovementsCount > 0) {
+          <p>You <span class="color-green">passed</span> at least one improvement check! Your EDU stat has <span class="color-green">increased</span> by {{ eduImprovementAmount }}.</p>
+        }
+        @else {
+          <p>You <span class="color-red">failed</span> your the improvement check(s) - your EDU stat has not been changed.</p>
+        }
+      }
+
+      @if (ageRange.id !== 2 && ageDeductionForm) {
+        <form [formGroup]="ageDeductionForm">
+          <h3>Penalties</h3>
+          <p>Due to your character's age, you must reduce the following statistics by a total of {{ ageDeductionInfo.totalPoints }} points.</p>
+          <p class="remaining-points">Remaining points to distribute: {{ getRemainingDeductionPoints() }}</p>
+          <div class="deduction-grid">
+            <div class="deduction-item" *ngFor="let stat of ageDeductionInfo.stats">
+              <div class="stat-name">{{ stat.toUpperCase() }}</div>
+              <div class="deduction-input">
+                <mat-form-field class="small-width">
+                  <mat-label>Deduct</mat-label>
+                  <input matInput type="number" min="0" [max]="getRemainingDeductionPoints() + getDeductionPerStat(stat)" 
+                        [formControlName]="stat"
+                        (change)="onAgeDeductionChange(stat)">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </form>
+      }
+    }
+  </mat-card-content>
+</mat-card>

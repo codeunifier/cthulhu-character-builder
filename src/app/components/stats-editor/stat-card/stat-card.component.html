@@ -1,0 +1,23 @@
+<div class="stat-card">
+  <div class="stat-header">
+    <h3>{{ name }}</h3>
+    <button mat-mini-fab color="accent" class="dice-btn" (click)="rollStat()"
+            [matTooltip]="tooltipText">
+      <mat-icon>casino</mat-icon>
+    </button>
+  </div>
+  <div class="stat-value">{{ character[stat] }}</div>
+  <div class="stat-calculation">
+    <div class="stat-base-value">Base: {{ character.baseStats[stat] }}</div>
+    @if (character.statModifiers[stat]?.length) {
+      <div class="stat-modifiers">
+        @for (mod of character.statModifiers[stat]; track character.statModifiers?.[stat]) {
+          <div class="modifier">
+            {{ mod.source }}: {{ mod.value > 0 ? '+' + mod.value : mod.value }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <p class="stat-desc">{{ desc }}</p>
+</div>

@@ -1,0 +1,60 @@
+.stat-card {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1em;
+      color: #512da8;
+    }
+  }
+  
+  .stat-desc {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+  }
+
+  .stat-value {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #512da8;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .stat-calculation {
+    color: #666;
+    font-size: 0.8em;
+  
+    .stat-modifiers {
+      margin-bottom: 8px;
+    
+      .modifier {
+        margin-bottom: 2px;
+        color: #9c27b0;
+      }
+    }
+  }
+
+  .dice-btn {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+  
+  .dice-btn mat-icon {
+    font-size: 16px;
+    line-height: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}

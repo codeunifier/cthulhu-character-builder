@@ -24,18 +24,29 @@ export interface Occupation {
 export interface PendingDeduction {
   stats: string[];
   points: number;
-  remainingPoints?: number;
-  deductions?: { [key: string]: number };
+  remainingPoints: number;
+  deductions: { [key: string]: number };
 }
 
 // Define the Character model
-export interface Character {
-  // Basic information
-  name: string;
-  age: number;
-  occupation: Occupation | null;
-  
-  // Core statistics
+export interface StatModifier {
+  source: string;
+  value: number;
+}
+
+export interface StatModifiers {
+  str?: StatModifier[];
+  con?: StatModifier[];
+  siz?: StatModifier[];
+  dex?: StatModifier[];
+  app?: StatModifier[];
+  int?: StatModifier[];
+  pow?: StatModifier[];
+  edu?: StatModifier[];
+  luck?: StatModifier[];
+}
+
+export interface Stats {
   str: number;
   con: number;
   siz: number;
@@ -45,6 +56,21 @@ export interface Character {
   pow: number;
   edu: number;
   luck: number;
+}
+
+export interface Character extends Stats {
+  // Basic information
+  name: string;
+  age: number;
+  occupation: Occupation | null;
+  
+  // Core statistics
+  
+  // Stat modifiers for tracking bonuses/penalties from various sources
+  statModifiers: StatModifiers;
+  
+  // Original rolled stats (before any modifications)
+  baseStats: Stats;
   
   // Derived attributes
   damageBonus: string;
