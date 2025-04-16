@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Stats } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,7 @@ export class DiceService {
   }
   
   // Generate a complete set of base statistics
-  generateBaseStats() {
+  generateBaseStats(): Stats {
     return {
       str: this.rollStatistic(),
       con: this.rollStatistic(),

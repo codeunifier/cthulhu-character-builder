@@ -25,7 +25,7 @@ import { CharacterService } from '../../services/character.service';
   styleUrl: './character-sheet.component.scss'
 })
 export class CharacterSheetComponent implements OnInit {
-  character: Character | null = null;
+  character!: Character;
   skillsColumn1: Skill[] = [];
   skillsColumn2: Skill[] = [];
   skillsColumn3: Skill[] = [];
@@ -38,18 +38,12 @@ export class CharacterSheetComponent implements OnInit {
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
-      this.character = character;
-      if (this.character) {
-        this.organizeSkills();
-      } else {
-        this.router.navigate(['/character-builder']);
-      }
+      this.character = character!;
+      this.organizeSkills();
     });
   }
 
-  organizeSkills(): void {
-    if (!this.character || !this.character.skills) return;
-    
+  organizeSkills(): void {    
     // Sort all skills alphabetically
     const sortedSkills = [...this.character.skills].sort((a, b) => 
       a.name.localeCompare(b.name)
@@ -71,9 +65,7 @@ export class CharacterSheetComponent implements OnInit {
   }
 
   saveCharacter(): void {
-    if (this.character) {
-      this.characterService.saveCharacter(this.character);
-    }
+    this.characterService.saveCharacter(this.character);
   }
 
   createNewCharacter(): void {

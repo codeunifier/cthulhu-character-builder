@@ -36,7 +36,7 @@ import { DiceService } from '../../services/dice.service';
   styleUrl: './backstory-editor.component.scss'
 })
 export class BackstoryEditorComponent implements OnInit {
-  character: Character | null = null;
+  character!: Character;
   
   // Sample backstory options for demonstration
   ideologyOptions = [
@@ -79,10 +79,7 @@ export class BackstoryEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
-      this.character = character;
-      if (!this.character) {
-        this.router.navigate(['/character-builder']);
-      }
+      this.character = character!;
     });
   }
 

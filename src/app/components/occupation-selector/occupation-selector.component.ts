@@ -38,7 +38,7 @@ import { DerivedStatsService } from '../../services/derived-stats.service';
   styleUrl: './occupation-selector.component.scss'
 })
 export class OccupationSelectorComponent implements OnInit {
-  character: Character | null = null;
+  character!: Character;
   occupations = OCCUPATIONS;
   filteredOccupations = [...OCCUPATIONS];
   selectedOccupation: Occupation | null = null;
@@ -54,11 +54,10 @@ export class OccupationSelectorComponent implements OnInit {
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
-      this.character = character;
-      if (this.character && this.character.occupation) {
+      this.character = character!;
+
+      if (this.character.occupation) {
         this.selectedOccupation = this.character.occupation;
-      } else if (!this.character) {
-        this.router.navigate(['/character-builder']);
       }
     });
   }

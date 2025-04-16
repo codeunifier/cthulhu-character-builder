@@ -43,7 +43,7 @@ import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/ag
 })
 export class StatsEditorComponent implements OnInit {
   statsForm!: FormGroup;
-  character: Character | null = null;
+  character!: Character;
   pendingDeduction: PendingDeduction | null = null;
   
   // Derived attributes
@@ -72,13 +72,9 @@ export class StatsEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
-      this.character = character;
-      if (this.character) {
-        this.initializeAgeRange();
-        this.initForm();
-      } else {
-        this.router.navigate(['/character-builder']);
-      }
+      this.character = character!;
+      this.initializeAgeRange();
+      this.initForm();
     });
   }
 
@@ -90,9 +86,7 @@ export class StatsEditorComponent implements OnInit {
     }
   }
 
-  initForm(): void {
-    if (!this.character) return;
-    
+  initForm(): void {    
     this.statsForm = this.fb.group({
       name: [this.character.name, Validators.required],
       age: [this.character.age, [Validators.required, Validators.min(15), Validators.max(89)]]
@@ -108,9 +102,7 @@ export class StatsEditorComponent implements OnInit {
     });
   }
   
-  recalculateDerivedAttributes(): void {
-    if (!this.character) return;
-    
+  recalculateDerivedAttributes(): void {    
     // Get age from form, other stats directly from character
     const age = this.statsForm ? Number(this.statsForm.get('age')?.value) || 20 : 20;
     const str = this.character.str;
@@ -184,9 +176,7 @@ export class StatsEditorComponent implements OnInit {
     }
   }
 
-  rollAllStats(): void {
-    if (!this.character) return;
-    
+  rollAllStats(): void {    
     // Get new base stats
     const stats = this.diceService.generateBaseStats();
     
@@ -236,7 +226,7 @@ export class StatsEditorComponent implements OnInit {
   }
 
   updateCharacterFromForm(): void {
-    if (!this.character || !this.statsForm.valid) return;
+    if (!this.statsForm.valid) return;
     
     const formValues = this.statsForm.value;
     
@@ -265,12 +255,10 @@ export class StatsEditorComponent implements OnInit {
   }
 
   getCurrentStatValue(stat: string): number {
-    return this.character?.[stat as keyof Character] as number;
+    return this.character[stat as keyof Character] as number;
   }
 
   onStatRoll(event: { stat: keyof Stats, value: number }): void {
-    if (!this.character) return;
-
     // Update the base stat
     this.character.baseStats[event.stat] = event.value;
 

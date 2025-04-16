@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Character, DEFAULT_SKILLS, Occupation, Skill } from '../models';
+import { Character, DEFAULT_SKILLS, Occupation, Skill, Stats } from '../models';
 import { DiceService } from './dice.service';
 import { AgeEffectsService } from './age-effects.service';
 import { DerivedStatsService } from './derived-stats.service';
-import { RollService } from './roll.service';
 import { OccupationService } from './occupation.service';
 
 @Injectable({
@@ -17,7 +16,6 @@ export class CharacterService {
     private diceService: DiceService,
     private ageEffectsService: AgeEffectsService,
     private derivedStatsService: DerivedStatsService,
-    private rollService: RollService,
     private occupationService: OccupationService
   ) {}
 
@@ -30,22 +28,14 @@ export class CharacterService {
   }
 
   createNewCharacter(): void {
-    const stats = this.diceService.generateBaseStats();
+    const stats: Stats = this.diceService.generateBaseStats();
     
     // Create a new character with default values
     const character: Character = {
+      ...stats,
       name: '',
       age: 20,
       occupation: null,
-      str: stats.str,
-      con: stats.con,
-      siz: stats.siz,
-      dex: stats.dex,
-      app: stats.app,
-      int: stats.int,
-      pow: stats.pow,
-      edu: stats.edu,
-      luck: stats.luck,
       // Store the original rolled stats
       baseStats: { ...stats },
       // Initialize stat modifiers

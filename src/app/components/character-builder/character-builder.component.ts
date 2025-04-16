@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Character } from '../../models';
 import { CharacterService } from '../../services/character.service';
 
@@ -16,7 +17,8 @@ import { CharacterService } from '../../services/character.service';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatSnackBarModule
   ],
   templateUrl: './character-builder.component.html',
   styleUrl: './character-builder.component.scss'
@@ -26,12 +28,26 @@ export class CharacterBuilderComponent implements OnInit {
 
   constructor(
     private characterService: CharacterService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
       this.character = character;
+    });
+
+    // Check if user was redirected due to missing character
+    this.route.queryParams.subscribe(params => {
+      if (params['redirected'] === 'true') {
+        this.snackBar.open('Please create or select a character first', 'Dismiss', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['mat-toolbar', 'mat-primary']
+        });
+      }
     });
 
     // Check if there's a saved character
