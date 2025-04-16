@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, output, OutputEmitterRef, SimpleChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { Character } from '../../../models/character.model';
+import { Character } from '../../../models';
 import { AgeRange } from '../stats-editor.component';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';

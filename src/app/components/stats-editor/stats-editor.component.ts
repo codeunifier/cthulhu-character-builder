@@ -12,7 +12,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { Character, PendingDeduction, StatModifier, StatModifiers, Stats } from '../../models/character.model';
+import { Character, PendingDeduction, StatModifier, StatModifiers, Stats } from '../../models';
 import { CharacterService } from '../../services/character.service';
 import { DiceService } from '../../services/dice.service';
 import { StatCardComponent } from './stat-card/stat-card.component';

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { Character, Stats } from '../../../models/character.model';
+import { Character, Stats } from '../../../models';
 import { DiceService } from '../../../services/dice.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';

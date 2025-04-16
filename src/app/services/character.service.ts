@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Character, DEFAULT_SKILLS, Occupation, Skill, StatModifiers } from '../models/character.model';
+import { Character, DEFAULT_SKILLS, Occupation, PendingDeduction, Skill, StatModifiers } from '../models';
 import { DiceService } from './dice.service';
 
 @Injectable({

@@ -8,11 +8,13 @@
     }
     @else {
       @if (isYoung) {
+        <!-- TODO: show the rolls for this and allow the user to reroll -->
         <p>5 points have been <span class="color-red">deducted</span> from EDU. Your LUCK has been rerolled with advantage.</p>
       }
       @else {
         <p>An improvement check has already been made to your EDU stat.</p>
 
+        <!-- TODO: show the rolls for the improvement checks and the improvement values and allow the user to reroll -->
         @if (eduImprovementsCount > 0) {
           <p>You <span class="color-green">passed</span> at least one improvement check! Your EDU stat has <span class="color-green">increased</span> by {{ eduImprovementAmount }}.</p>
         }

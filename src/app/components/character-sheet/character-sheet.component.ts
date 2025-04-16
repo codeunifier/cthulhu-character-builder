@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
 
-import { Character, Skill } from '../../models/character.model';
+import { Character, Skill } from '../../models';
 import { CharacterService } from '../../services/character.service';
 
 @Component({

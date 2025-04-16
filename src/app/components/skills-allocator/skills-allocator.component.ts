@@ -12,7 +12,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { Character, Skill } from '../../models/character.model';
+import { Character, Skill } from '../../models';
 import { CharacterService } from '../../services/character.service';
 
 @Component({

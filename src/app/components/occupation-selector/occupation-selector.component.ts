@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
-import { Character, Occupation, OCCUPATIONS } from '../../models/character.model';
+import { Character, Occupation, OCCUPATIONS } from '../../models';
 import { CharacterService } from '../../services/character.service';
 
 @Component({
