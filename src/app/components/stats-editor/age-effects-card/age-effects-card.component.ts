@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, output, OutputEmitterRef, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, output, OutputEmitterRef, SimpleChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Character } from '../../../models';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -33,11 +33,13 @@ export interface AgeDeductionInfo {
     ReactiveFormsModule,
   ],
   templateUrl: './age-effects-card.component.html',
-  styleUrl: './age-effects-card.component.scss'
+  styleUrl: './age-effects-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AgeEffectsCardComponent implements OnInit, OnChanges {
-  @Input({ required: true }) character!: Character;
+export class AgeEffectsCardComponent implements OnInit {
   @Input({ required: true }) ageRange?: AgeRange | undefined;
+
+  character!: Character;
 
   ageDeductionChange: OutputEmitterRef<AgeDeductionInfo> = output<AgeDeductionInfo>();
 
@@ -92,24 +94,22 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
     private characterService: CharacterService, 
     private ageEffectsService: AgeEffectsService,
     private rollService: RollService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.loadImprovementRolls();
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['ageRange'] || changes['character']) {
-      this.initForm();
+    this.characterService.getCharacter().subscribe((character: Character | null) => {
+      this.character = character!;
       this.loadImprovementRolls();
-    }
+    });
   }
   
   // Load improvement roll data from the character service
   loadImprovementRolls(): void {
-    if (!this.character || this.ageRange?.id === 1) {
+    if (this.ageRange?.id === 1) {
       this.improvementRolls = [];
       return;
     }
@@ -122,6 +122,8 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
       this.improvementRolls = result.rolls;
       this.characterService.updateCharacter(this.character);
     }
+
+    this.cdr.detectChanges();
   }
   
   // Reroll all improvement checks

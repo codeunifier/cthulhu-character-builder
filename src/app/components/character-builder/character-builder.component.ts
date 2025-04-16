@@ -49,15 +49,6 @@ export class CharacterBuilderComponent implements OnInit {
         });
       }
     });
-
-    // Check if there's a saved character
-    if (!this.character) {
-      const savedCharacter = this.characterService.loadCharacter();
-      if (!savedCharacter) {
-        // Create a new character if none exists
-        this.createNewCharacter();
-      }
-    }
   }
 
   createNewCharacter(): void {

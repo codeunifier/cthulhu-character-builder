@@ -6,13 +6,18 @@ export const characterGuard: CanActivateFn = () => {
   const characterService = inject(CharacterService);
   const router = inject(Router);
 
-  // Check if character exists
-  const character = characterService.getCurrentCharacter();
+  // Check if character is actively loaded
+  let character = characterService.getCurrentCharacter();
   
   if (!character) {
-    // Redirect to home if no character exists with a redirect flag
-    router.navigate(['/'], { queryParams: { redirected: true } });
-    return false;
+    // Check if a character is saved locally
+    character = characterService.loadCharacter();
+
+    if (!character) {
+      // Redirect to home if no character exists with a redirect flag
+      router.navigate(['/'], { queryParams: { redirected: true } });
+      return false;
+    }
   }
   
   return true;

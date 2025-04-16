@@ -1,5 +1,7 @@
 @use '@angular/material' as mat;
 
+@use "variables";
+
 html, body { 
   height: 100%; 
 }
@@ -16,13 +18,12 @@ body {
 
 .section-title {
   margin-bottom: 20px;
-  color: #333;
 }
 
 h1.section-title {
   font-family: 'CthulhumbusUG', serif;
   font-size: 2.2rem;
-  color: #512da8;
+  // color: variables.$basePurpleColor;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
 }
@@ -84,14 +85,14 @@ h1.section-title {
 
 @font-face {
   font-family: "Cthulhumbus";
-  src: url('./assets/fonts/JMH Cthulhumbus.otf') format('opentype');
+  src: url('./fonts/JMH Cthulhumbus.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "CthulhumbusUG";
-  src: url('./assets/fonts/JMH Cthulhumbus UG.ttf') format('truetype');
+  src: url('./fonts/JMH Cthulhumbus UG.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -109,7 +110,7 @@ h1.section-title {
 }
 
 h1, h2, h3 {
-  color: #512da8;
+  color: variables.$basePurpleColor;
 }
 
 h1, h2 {

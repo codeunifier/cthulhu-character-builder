@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,12 +11,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { Character, PendingDeduction, StatModifier, StatModifiers, Stats } from '../../models';
 import { CharacterService } from '../../services/character.service';
 import { DiceService } from '../../services/dice.service';
 import { AgeRangeService, AgeRange } from '../../services/age-range.service';
-import { StatCardComponent } from './stat-card/stat-card.component';
+import { ConfirmationDialogComponent, StatCardComponent } from './stat-card/stat-card.component';
 import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/age-effects-card.component";
 
 @Component({
@@ -35,11 +36,14 @@ import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/ag
     MatSliderModule,
     MatDividerModule,
     MatTooltipModule,
+    MatDialogModule,
     StatCardComponent,
+    ConfirmationDialogComponent,
     AgeEffectsCardComponent
 ],
   templateUrl: './stats-editor.component.html',
-  styleUrl: './stats-editor.component.scss'
+  styleUrl: './stats-editor.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatsEditorComponent implements OnInit {
   statsForm!: FormGroup;
@@ -60,7 +64,8 @@ export class StatsEditorComponent implements OnInit {
     private characterService: CharacterService,
     private diceService: DiceService,
     private ageRangeService: AgeRangeService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {
     // Get age ranges from service
     this.ageRanges = this.ageRangeService.getAllAgeRanges().map(range => ({
@@ -72,9 +77,11 @@ export class StatsEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
+      console.log(character);
       this.character = character!;
       this.initializeAgeRange();
       this.initForm();
+      this.cdr.detectChanges();
     });
   }
 
@@ -265,13 +272,29 @@ export class StatsEditorComponent implements OnInit {
     // Apply the new base value
     this.character[event.stat] = event.value;
 
-    // Reapply any modifiers
-    if (this.character.statModifiers && this.character.statModifiers[event.stat]) {
-      this.character.statModifiers[event.stat]?.forEach((mod: StatModifier) => {
-        if (this.character?.[event.stat]) {
-          this.character[event.stat] += mod.value;
-        }
-      });
+    // If EDU was rerolled, clear improvement checks
+    if (event.stat === 'edu' && this.character.improvementRolls?.['edu']) {
+      // Clear any existing EDU improvement rolls
+      this.character.improvementRolls['edu'] = [];
+      
+      // Remove any EDU improvement modifiers
+      if (this.character.statModifiers?.edu) {
+        this.character.statModifiers.edu = this.character.statModifiers.edu.filter(
+          mod => mod.source !== 'Improvement Check'
+        );
+      }
+      
+      // Reapply age effects to generate new improvement checks if needed
+      this.characterService.applyAgeEffects(this.character, this.character.age);
+    } else {
+      // Reapply any modifiers for non-EDU stats
+      if (this.character.statModifiers && this.character.statModifiers[event.stat]) {
+        this.character.statModifiers[event.stat]?.forEach((mod: StatModifier) => {
+          if (this.character?.[event.stat]) {
+            this.character[event.stat] += mod.value;
+          }
+        });
+      }
     }
     
     // Recalculate derived attributes
