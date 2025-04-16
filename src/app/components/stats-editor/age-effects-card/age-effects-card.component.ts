@@ -1,15 +1,17 @@
 import { Component, Input, OnChanges, OnInit, output, OutputEmitterRef, SimpleChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Character } from '../../../models';
-import { AgeRange } from '../stats-editor.component';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CharacterService } from '../../../services/character.service';
+import { AgeEffectsService } from '../../../services/age-effects.service';
+import { RollService } from '../../../services/roll.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { AgeRange } from '../../../services/age-range.service';
 
 export interface AgeDeductionInfo {
   totalPoints: number;
@@ -98,7 +100,12 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
     usedPoints: {}
   };
 
-  constructor(private characterService: CharacterService, private fb: FormBuilder) {}
+  constructor(
+    private characterService: CharacterService, 
+    private ageEffectsService: AgeEffectsService,
+    private rollService: RollService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -106,7 +113,7 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['ageRange']) {
+    if (changes['ageRange'] || changes['character']) {
       this.initForm();
       this.loadImprovementRolls();
     }
@@ -114,16 +121,26 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
   
   // Load improvement roll data from the character service
   loadImprovementRolls(): void {
-    if (!this.character || this.isYoung) return;
+    if (!this.character || this.isYoung) {
+      this.improvementRolls = [];
+      return;
+    }
     
-    this.improvementRolls = this.characterService.getImprovementRolls('edu');
+    this.improvementRolls = this.rollService.getImprovementRolls(this.character, 'edu');
+    
+    // If no rolls exist but we should have improvement checks, trigger a new roll
+    if (this.improvementRolls.length === 0 && this.improvementChecksCount > 0) {
+      const result = this.rollService.makeImprovementCheck(this.character, 'edu', this.improvementChecksCount);
+      this.improvementRolls = result.rolls;
+      this.characterService.updateCharacter(this.character);
+    }
   }
   
   // Reroll all improvement checks
   rerollAllImprovementChecks(): void {
     if (!this.character) return;
     
-    this.characterService.rerollAllImprovementChecks(this.character, 'edu');
+    this.rollService.rerollAllImprovementChecks(this.character, 'edu');
     
     // Reload rolls after rerolling
     this.loadImprovementRolls();
@@ -133,14 +150,14 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
   }
 
   private initForm(): void {
-    // Get age deduction info from character service
-    this.ageDeductionInfo = this.characterService.getAgeDeductionInfo();
+    // Get age deduction info from age effects service
+    this.ageDeductionInfo = this.ageEffectsService.getAgeDeductionInfo();
 
     // Create form controls for age deductions
     const deductionControls: { [key: string]: any } = {};
     this.ageDeductionInfo.stats.forEach(stat => {
       const currentDeduction = this.ageDeductionInfo.usedPoints[stat] || 0;
-      const remainingPoints = this.characterService.getAgeDeductionRemainingPoints();
+      const remainingPoints = this.ageEffectsService.getAgeDeductionRemainingPoints();
       
       deductionControls[stat] = [currentDeduction, [
         Validators.min(0), 
@@ -159,11 +176,11 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
   }
 
   getRemainingDeductionPoints(): number {
-    return this.characterService.getAgeDeductionRemainingPoints();
+    return this.ageEffectsService.getAgeDeductionRemainingPoints();
   }
 
   getDeductionPerStat(stat: string): number {
-    return this.characterService.getAgeDeductionUsedForStat(stat);
+    return this.ageEffectsService.getAgeDeductionUsedForStat(stat);
   }
 
   onAgeDeductionChange(stat: string): void {
@@ -174,7 +191,7 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
     if (currentValue === undefined || currentValue === null) return;
     
     // Get previously applied deduction for this stat
-    const previousDeduction = this.characterService.getAgeDeductionUsedForStat(stat);
+    const previousDeduction = this.ageEffectsService.getAgeDeductionUsedForStat(stat);
     
     // No change needed if the values are the same
     if (previousDeduction === currentValue) return;
@@ -183,22 +200,22 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
     const difference = currentValue - previousDeduction;
     
     // Check if we have enough points to apply this change
-    if (difference > this.characterService.getAgeDeductionRemainingPoints()) {
+    if (difference > this.ageEffectsService.getAgeDeductionRemainingPoints()) {
       // Reset to previous value if not enough points
       this.ageDeductionForm.get(stat)?.setValue(previousDeduction);
       return;
     }
     
     // Apply the deduction difference
-    this.characterService.applyStatDeduction(this.character, stat, difference);
+    this.ageEffectsService.applyStatDeduction(this.character, stat, difference);
     
     // Update our local copy of the age deduction info
-    this.ageDeductionInfo = this.characterService.getAgeDeductionInfo();
+    this.ageDeductionInfo = this.ageEffectsService.getAgeDeductionInfo();
     
     // Update form max values based on remaining points
-    const remainingPoints = this.characterService.getAgeDeductionRemainingPoints();
+    const remainingPoints = this.ageEffectsService.getAgeDeductionRemainingPoints();
     this.ageDeductionInfo.stats.forEach(s => {
-      const currentUsed = this.characterService.getAgeDeductionUsedForStat(s);
+      const currentUsed = this.ageEffectsService.getAgeDeductionUsedForStat(s);
       this.ageDeductionForm?.get(s)?.setValidators([
         Validators.min(0), 
         Validators.max(remainingPoints + currentUsed)
@@ -206,7 +223,10 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
       this.ageDeductionForm?.get(s)?.updateValueAndValidity();
     });
     
-    // Recalculate derived attributes
+    // Recalculate derived attributes and update character
+    this.characterService.updateCharacter(this.character);
+    
+    // Emit change for parent component
     this.ageDeductionChange.emit(this.ageDeductionInfo);
   }
 }

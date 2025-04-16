@@ -15,16 +15,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Character, PendingDeduction, StatModifier, StatModifiers, Stats } from '../../models';
 import { CharacterService } from '../../services/character.service';
 import { DiceService } from '../../services/dice.service';
+import { AgeRangeService, AgeRange } from '../../services/age-range.service';
 import { StatCardComponent } from './stat-card/stat-card.component';
 import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/age-effects-card.component";
-
-export interface AgeRange {
-  id: number;
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-}
 
 @Component({
   selector: 'app-stats-editor',
@@ -59,23 +52,23 @@ export class StatsEditorComponent implements OnInit {
   derivedBuild: number = 0;
   derivedMovementRate: number = 8;
   
-  ageRanges: Array<AgeRange> = [
-    { id: 1, label: '15-19 (Young)', value: 17, min: 15, max: 19 },
-    { id: 2, label: '20-39 (Adult)', value: 30, min: 20, max: 39 },
-    { id: 3, label: '40-49 (Middle-aged)', value: 45, min: 40, max: 49 },
-    { id: 4, label: '50-59 (Middle-aged)', value: 55, min: 50, max: 59 },
-    { id: 5, label: '60-69 (Older)', value: 65, min: 60, max: 69 },
-    { id: 6, label: '70-79 (Old)', value: 75, min: 70, max: 79 },
-    { id: 7, label: '80-89 (Very Old)', value: 85, min: 80, max: 89 },
-  ];
+  ageRanges: Array<AgeRange> = [];
   selectedAgeRange?: AgeRange;
 
   constructor(
     private fb: FormBuilder,
     private characterService: CharacterService,
     private diceService: DiceService,
+    private ageRangeService: AgeRangeService,
     private router: Router
-  ) {}
+  ) {
+    // Get age ranges from service
+    this.ageRanges = this.ageRangeService.getAllAgeRanges().map(range => ({
+      ...range,
+      label: `${range.min}-${range.max} (${range.name})`,
+      value: Math.floor((range.min + range.max) / 2) // Average age in the range
+    }));
+  }
 
   ngOnInit(): void {
     this.characterService.getCharacter().subscribe(character => {
@@ -182,21 +175,8 @@ export class StatsEditorComponent implements OnInit {
     }
     
     // Apply age modifiers to movement rate
-    if (age >= 40 && age <= 49) {
-      this.derivedMovementRate -= 1;
-    } 
-    else if (age >= 50 && age <= 59) {
-      this.derivedMovementRate -= 2;
-    } 
-    else if (age >= 60 && age <= 69) {
-      this.derivedMovementRate -= 3;
-    } 
-    else if (age >= 70 && age <= 79) {
-      this.derivedMovementRate -= 4;
-    } 
-    else if (age >= 80) {
-      this.derivedMovementRate -= 5;
-    }
+    const movementPenalty = this.ageRangeService.getMovementPenalty(age);
+    this.derivedMovementRate -= movementPenalty;
     
     // Ensure MOV doesn't go below 1
     if (this.derivedMovementRate < 1) {
@@ -245,10 +225,14 @@ export class StatsEditorComponent implements OnInit {
     this.selectedAgeRange = this.ageRanges.find((range) => range.id === ageRangeId)!;
     
     if (this.selectedAgeRange) {
-      this.statsForm.get('age')?.setValue(this.selectedAgeRange.value);
+      const newAge = this.getRandomNumber(this.selectedAgeRange.min, this.selectedAgeRange.max);
+      this.statsForm.get('age')?.setValue(newAge);
+      this.characterService.applyAgeEffects(this.character!, newAge);
     }
+  }
 
-    this.characterService.applyAgeEffects(this.character!, this.selectedAgeRange!.value);
+  private getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   updateCharacterFromForm(): void {

@@ -15,6 +15,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { Character, Occupation, OCCUPATIONS } from '../../models';
 import { CharacterService } from '../../services/character.service';
+import { DerivedStatsService } from '../../services/derived-stats.service';
 
 @Component({
   selector: 'app-occupation-selector',
@@ -47,6 +48,7 @@ export class OccupationSelectorComponent implements OnInit {
 
   constructor(
     private characterService: CharacterService,
+    private derivedStatsService: DerivedStatsService,
     private router: Router
   ) {}
 
@@ -83,7 +85,7 @@ export class OccupationSelectorComponent implements OnInit {
   getSkillPointsValue(occupation: Occupation): string {
     if (!this.character) return 'N/A';
     
-    const points = this.characterService.calculateOccupationSkillPoints(this.character, occupation);
+    const points = this.derivedStatsService.calculateOccupationSkillPoints(this.character, occupation);
     return points.toString();
   }
 

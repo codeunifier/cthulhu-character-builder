@@ -22,7 +22,7 @@
             <select matNativeControl (change)="onAgeRangeChange($event)">
               <option value="">Select age range</option>
               <option *ngFor="let range of ageRanges" [value]="range.id" [selected]="range.id === selectedAgeRange?.id">
-                {{ range.label }}
+                {{ range.selectorName }}
               </option>
             </select>
           </mat-form-field>
