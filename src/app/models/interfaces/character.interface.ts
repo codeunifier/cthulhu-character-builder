@@ -4,6 +4,14 @@ import { Skill } from './skill.interface';
 import { StatModifiers } from './stat-modifiers.interface';
 import { Stats } from './stats.interface';
 
+// Define improvement roll interface
+export interface ImprovementRoll {
+  check: number;    // The d100 roll
+  target: number;   // The stat value (target to exceed)
+  success: boolean; // Whether the roll was successful
+  improvement?: number; // The d10 roll (if successful)
+}
+
 // Character interface definition
 export interface Character extends Stats {
   // Basic information
@@ -28,6 +36,11 @@ export interface Character extends Stats {
   
   // Skill points
   remainingSkillPoints: number;
+  
+  // Improvement check rolls
+  improvementRolls?: {
+    [stat: string]: ImprovementRoll[];
+  };
   
   // Backstory elements
   ideology: string;

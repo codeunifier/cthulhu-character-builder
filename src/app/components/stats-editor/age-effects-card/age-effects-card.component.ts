@@ -7,6 +7,9 @@ import { CommonModule } from '@angular/common';
 import { CharacterService } from '../../../services/character.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface AgeDeductionInfo {
   totalPoints: number;
@@ -22,6 +25,9 @@ export interface AgeDeductionInfo {
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
     ReactiveFormsModule,
   ],
   templateUrl: './age-effects-card.component.html',
@@ -35,7 +41,10 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
 
   deductionAmounts: { [key: string]: number } = {};
   ageDeductionForm?: FormGroup;
-
+  
+  // Improvement check data
+  improvementRolls: { check: number; target: number; success: boolean; improvement?: number }[] = [];
+  
   get eduImprovementsCount(): number {
     if (!this.character || !this.character.statModifiers || !this.character.statModifiers.edu) {
       return 0;
@@ -50,8 +59,11 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
       return 0;
     }
     
-    // Check if the EDU stat has any modifiers with source "Improvement Check"
-    return this.character.statModifiers.edu.map((statMod) => statMod.value).reduce((prev, current, idx) => prev + current);
+    // Sum up all the improvement check modifiers
+    const improvementModifiers = this.character.statModifiers.edu.filter(mod => mod.source === 'Improvement Check');
+    if (improvementModifiers.length === 0) return 0;
+    
+    return improvementModifiers.reduce((sum, mod) => sum + mod.value, 0);
   }
 
   get isYoung(): boolean {
@@ -65,6 +77,20 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
   get isMiddleAged(): boolean {
     return this.ageRange?.id === 3;
   }
+  
+  // Returns the number of improvement checks based on age range
+  get improvementChecksCount(): number {
+    if (!this.ageRange) return 0;
+    
+    switch (this.ageRange.id) {
+      case 1: return 0; // Young (15-19)
+      case 2: return 1; // Adult (20-39)
+      case 3: return 2; // Middle-aged (40-49)
+      case 4: return 3; // Mature (50-59)
+      case 5: case 6: case 7: return 4; // Elderly (60+)
+      default: return 0;
+    }
+  }
 
   ageDeductionInfo: AgeDeductionInfo = {
     totalPoints: 0,
@@ -76,12 +102,34 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.initForm();
+    this.loadImprovementRolls();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ageRange']) {
       this.initForm();
+      this.loadImprovementRolls();
     }
+  }
+  
+  // Load improvement roll data from the character service
+  loadImprovementRolls(): void {
+    if (!this.character || this.isYoung) return;
+    
+    this.improvementRolls = this.characterService.getImprovementRolls('edu');
+  }
+  
+  // Reroll all improvement checks
+  rerollAllImprovementChecks(): void {
+    if (!this.character) return;
+    
+    this.characterService.rerollAllImprovementChecks(this.character, 'edu');
+    
+    // Reload rolls after rerolling
+    this.loadImprovementRolls();
+    
+    // Update the character
+    this.characterService.updateCharacter(this.character);
   }
 
   private initForm(): void {

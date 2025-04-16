@@ -12,15 +12,59 @@
         <p>5 points have been <span class="color-red">deducted</span> from EDU. Your LUCK has been rerolled with advantage.</p>
       }
       @else {
-        <p>An improvement check has already been made to your EDU stat.</p>
+        <p>Based on your age, your EDU stat has been checked for improvement.</p>
 
-        <!-- TODO: show the rolls for the improvement checks and the improvement values and allow the user to reroll -->
-        @if (eduImprovementsCount > 0) {
-          <p>You <span class="color-green">passed</span> at least one improvement check! Your EDU stat has <span class="color-green">increased</span> by {{ eduImprovementAmount }}.</p>
-        }
-        @else {
-          <p>You <span class="color-red">failed</span> your the improvement check(s) - your EDU stat has not been changed.</p>
-        }
+        <!-- Display the improvement rolls and reroll options -->
+        <div class="improvement-rolls-container">
+          <div class="rolls-header">
+            <h3>EDU Improvement Checks ({{ improvementChecksCount }})</h3>
+            <button mat-raised-button color="accent" 
+                    (click)="rerollAllImprovementChecks()"
+                    matTooltip="Reroll all improvement checks"
+                    class="reroll-all-btn">
+              <mat-icon>casino</mat-icon> Reroll All Checks
+            </button>
+          </div>
+          
+          @if (improvementRolls.length === 0) {
+            <p>No improvement checks have been rolled yet.</p>
+          } @else {
+            <div class="improvement-rolls">
+              @for (roll of improvementRolls; track $index) {
+                <div class="improvement-roll" [class.success]="roll.success" [class.failure]="!roll.success">
+                  <div class="roll-details">
+                    <div class="roll-header">
+                      <span class="roll-index">Check #{{ $index + 1 }}</span>
+                    </div>
+                    
+                    <span class="roll-result" [matTooltip]="'Roll: ' + roll.check + ' vs Target: ' + roll.target">
+                      {{ roll.check }} vs {{ roll.target }}
+                      @if (roll.success) {
+                        <span class="roll-status">(Success!)</span>
+                      } @else {
+                        <span class="roll-status">(Failed)</span>
+                      }
+                    </span>
+                    
+                    @if (roll.success) {
+                      <div class="improvement-amount">
+                        <span>Improvement: +{{ roll.improvement }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="improvement-summary">
+              @if (eduImprovementsCount > 0) {
+                <p>Your EDU stat has <span class="color-green">increased</span> by {{ eduImprovementAmount }} points total.</p>
+              } @else {
+                <p>You failed all improvement checks - your EDU stat has not changed.</p>
+              }
+            </div>
+          }
+        </div>
       }
 
       @if (ageRange.id !== 2 && ageDeductionForm) {

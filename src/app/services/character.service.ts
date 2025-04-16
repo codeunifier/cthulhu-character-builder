@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Character, DEFAULT_SKILLS, Occupation, PendingDeduction, Skill, StatModifiers } from '../models';
+import { Character, DEFAULT_SKILLS, Occupation, PendingDeduction, Skill, StatModifiers, Stats } from '../models';
 import { DiceService } from './dice.service';
 
 @Injectable({
@@ -60,6 +60,8 @@ export class CharacterService {
         edu: [],
         luck: []
       },
+      // Initialize improvement rolls
+      improvementRolls: {},
       damageBonus: 'None',
       build: 0,
       hp: 0,
@@ -86,6 +88,7 @@ export class CharacterService {
   updateCharacter(character: Character): void {
     this.updateDerivedAttributes(character);
     this.updateDerivedSkills(character);
+    this.saveCharacter(character);
     this.characterSubject.next(character);
   }
 
@@ -382,19 +385,122 @@ export class CharacterService {
     }
   }
 
-  makeImprovementCheck(character: Character, stat: string, times: number): void {
+  makeImprovementCheck(character: Character, stat: string, times: number): { rolls: any[], totalImprovement: number } {
     if (stat !== 'str' && stat !== 'con' && stat !== 'dex' && 
         stat !== 'app' && stat !== 'pow' && stat !== 'int' && 
         stat !== 'edu' && stat !== 'siz' && stat !== 'luck') {
-      return; // Only apply to valid numerical stats
+      return { rolls: [], totalImprovement: 0 }; // Only apply to valid numerical stats
     }
+    
+    // Initialize improvementRolls on the character if it doesn't exist
+    if (!character.improvementRolls) {
+      character.improvementRolls = {};
+    }
+    
+    // Initialize the array for this stat if it doesn't exist
+    if (!character.improvementRolls[stat]) {
+      character.improvementRolls[stat] = [];
+    } else {
+      // Clear previous rolls for this stat
+      character.improvementRolls[stat] = [];
+    }
+    
+    let totalImprovement = 0;
+    const rolls = [];
     
     for (let i = 0; i < times; i++) {
       const roll = this.diceService.roll1d100();
-      if (roll > character[stat]) {
-        const improvement = this.diceService.roll1d10();
-        this.addStatModifier(character, stat, improvement, 'Improvement Check');
+      const statValue = character[stat];
+      const success = roll > statValue;
+      
+      const rollData = {
+        check: roll,
+        target: statValue,
+        success: success,
+        improvement: success ? this.diceService.roll1d10() : undefined
+      };
+      
+      character.improvementRolls[stat].push(rollData);
+      rolls.push(rollData);
+      
+      if (success && rollData.improvement !== undefined) {
+        totalImprovement += rollData.improvement;
+        this.addStatModifier(character, stat, rollData.improvement, 'Improvement Check');
       }
+    }
+    
+    return { rolls, totalImprovement };
+  }
+  
+  // Get roll information for a specific stat's improvement check
+  getImprovementRolls(stat: string): { check: number; target: number; success: boolean; improvement?: number }[] {
+    const character = this.getCurrentCharacter();
+    if (!character || !character.improvementRolls || !character.improvementRolls[stat]) {
+      return [];
+    }
+    return character.improvementRolls[stat];
+  }
+  
+  // Reroll all improvement checks for a stat
+  rerollAllImprovementChecks(character: Character, stat: string): { rolls: any[], totalImprovement: number } {
+    // Determine number of checks based on character's age
+    const numberOfChecks = this.getNumberOfImprovementChecksFromAge(character.age);
+    
+    if (numberOfChecks === 0) {
+      return { rolls: [], totalImprovement: 0 };
+    }
+    
+    // Remove all existing improvement modifiers for this stat
+    this.removeAllImprovementModifiers(character, stat);
+    
+    // Perform all checks again
+    return this.makeImprovementCheck(character, stat, numberOfChecks);
+  }
+
+  private getNumberOfImprovementChecksFromAge(age: number): number {
+    let numberOfChecks = 0;
+    
+    if (age >= 20 && age <= 39) {
+      numberOfChecks = 1;
+    } else if (age >= 40 && age <= 49) {
+      numberOfChecks = 2;
+    } else if (age >= 50 && age <= 59) {
+      numberOfChecks = 3;
+    } else if (age >= 60) {
+      numberOfChecks = 4;
+    }
+
+    return numberOfChecks;
+  }
+  
+  // Remove all improvement modifiers for a stat
+  private removeAllImprovementModifiers(character: Character, stat: string): void {
+    if (!character.statModifiers || !character.statModifiers[stat as keyof StatModifiers]) {
+      return;
+    }
+    
+    // Get all improvement modifiers
+    const improvementModifiers = character.statModifiers[stat as keyof StatModifiers]!.filter(
+      mod => mod.source === 'Improvement Check'
+    );
+    
+    // Calculate total improvement value
+    const totalImprovement = improvementModifiers.reduce((sum, mod) => sum + mod.value, 0);
+    
+    // Remove all improvement modifiers
+    character.statModifiers[stat as keyof StatModifiers] = character.statModifiers[stat as keyof StatModifiers]!.filter(
+      mod => mod.source !== 'Improvement Check'
+    );
+    
+    // Update the stat value
+    if (totalImprovement > 0) {
+      (character[stat as keyof Character] as number) -= totalImprovement;
+    }
+    
+    // Ensure stats don't go below minimum values
+    const minValue = ['siz', 'int', 'edu'].includes(stat) ? 40 : 15;
+    if ((character[stat as keyof Character] as number) < minValue) {
+      (character[stat as keyof Character] as number) = minValue;
     }
   }
 
