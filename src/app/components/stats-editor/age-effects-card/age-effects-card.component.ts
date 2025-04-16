@@ -67,18 +67,6 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
     
     return improvementModifiers.reduce((sum, mod) => sum + mod.value, 0);
   }
-
-  get isYoung(): boolean {
-    return this.ageRange?.id === 1;
-  }
-
-  get isAdult(): boolean {
-    return this.ageRange?.id === 2;
-  }
-
-  get isMiddleAged(): boolean {
-    return this.ageRange?.id === 3;
-  }
   
   // Returns the number of improvement checks based on age range
   get improvementChecksCount(): number {
@@ -121,7 +109,7 @@ export class AgeEffectsCardComponent implements OnInit, OnChanges {
   
   // Load improvement roll data from the character service
   loadImprovementRolls(): void {
-    if (!this.character || this.isYoung) {
+    if (!this.character || this.ageRange?.id === 1) {
       this.improvementRolls = [];
       return;
     }

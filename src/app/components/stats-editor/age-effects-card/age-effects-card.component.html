@@ -7,13 +7,11 @@
       <p>Please select an age range above to determine bonuses and penalties.</p>
     }
     @else {
-      @if (isYoung) {
-        <!-- TODO: show the rolls for this and allow the user to reroll -->
-        <p>5 points have been <span class="color-red">deducted</span> from EDU. Your LUCK has been rerolled with advantage.</p>
-      }
-      @else {
-        <p>Based on your age, your EDU stat has been checked for improvement.</p>
+      If you are "{{ ageRange.name }}", you receive {{ ageRange.eduImprovementChecks }} improvement checks for your EDU stat.
 
+      
+
+      @if (ageRange.id > 1) {
         <!-- Display the improvement rolls and reroll options -->
         <div class="improvement-rolls-container">
           <div class="rolls-header">
@@ -85,6 +83,11 @@
               </div>
             </div>
           </div>
+          <br />
+          @if (ageRange.id === 1) {
+            <!-- TODO: show the rolls for this and allow the user to reroll -->
+            <p>5 points have been <span class="color-red">deducted</span> from EDU. Your LUCK has been rerolled with advantage.</p>
+          }
         </form>
       }
     }
