@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Skill Item",
+    "description": "An item connected with your highest skill (e.g. expensive suit, false ID, brass knuckles)."
+  },
+  {
+    "id": 2,
+    "name": "Occupation Item",
+    "description": "An essential item for your occupation (e.g. doctor's bag, car, lock picks)."
+  },
+  {
+    "id": 3,
+    "name": "Childhood",
+    "description": "A memento from your childhood (e.g. comics, pocketknife, lucky coin)."
+  },
+  {
+    "id": 4,
+    "name": "Memento",
+    "description": "A memento of a departed person (e.g. jewelry, a photograph in your wallet, a letter)."
+  },
+  {
+    "id": 5,
+    "name": "Gift",
+    "description": "Something given to you by your Significant Person (e.g. a ring, a diary, a map)."
+  },
+  {
+    "id": 6,
+    "name": "Collection",
+    "description": "Your collection. What is it? (e.g. bus tickets, stuffed animals, records)."
+  },
+  {
+    "id": 7,
+    "name": "Mystery Item",
+    "description": "Something you found but you don't know what it is – you seek answers (e.g. a letter you found in a cupboard written in an unknown language, a curious pipe of unknown origin found among your late father's effects, a curious silver ball you dug up in your garden)."
+  },
+  {
+    "id": 8,
+    "name": "Sport",
+    "description": "A sporting item (e.g. cricket bat, a signed baseball, a fishing rod)."
+  },
+  {
+    "id": 9,
+    "name": "Weapon",
+    "description": "A weapon (e.g. service revolver, your old hunting rifle, the hidden knife in your boot)."
+  },
+  {
+    "id": 10,
+    "name": "Pet",
+    "description": "A pet (e.g. a dog, a cat, a tortoise)."
+  }
+]

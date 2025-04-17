@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Religious",
+    "description": "There is a higher power that you worship and pray to (e.g. Vishnu, Jesus Christ, Haile Selassie I)."
+  },
+  {
+    "id": 2,
+    "name": "Atheist",
+    "description": "Mankind can do fine without religions (e.g. staunch atheist, humanist, secularist)."
+  },
+  {
+    "id": 3,
+    "name": "Scientific",
+    "description": "Science has all the answers. Pick a particular aspect of interest (e.g. evolution, cryogenics, space exploration)."
+  },
+  {
+    "id": 4,
+    "name": "Fatalist",
+    "description": "A belief in fate (e.g. karma, the class system, superstitious)."
+  },
+  {
+    "id": 5,
+    "name": "Society Member",
+    "description": "Member of a society or secret society (e.g. Freemason, Women's Institute, Anonymous)."
+  },
+  {
+    "id": 6,
+    "name": "Crusader",
+    "description": "There is evil in society that should be rooted out. What is this evil? (e.g. drugs, violence, racism)."
+  },
+  {
+    "id": 7,
+    "name": "Occultist",
+    "description": "The occult (e.g. astrology, spiritualism, tarot)."
+  },
+  {
+    "id": 8,
+    "name": "Political",
+    "description": "Politics (e.g. conservative, socialist, liberal)."
+  },
+  {
+    "id": 9,
+    "name": "Materialist",
+    "description": "\"Money is power, and I'm going to get all I can\" (e.g. greedy, enterprising, ruthless)."
+  },
+  {
+    "id": 10,
+    "name": "Activist",
+    "description": "Campaigner/Activist (e.g. feminism, equal rights, union power)."
+  }
+]

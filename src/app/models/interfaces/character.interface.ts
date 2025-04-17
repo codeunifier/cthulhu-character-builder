@@ -44,11 +44,21 @@ export interface Character extends Stats {
   
   // Backstory elements
   ideology: string;
+  ideologyDescription?: string;
+  
   significantPerson: {
     who: string;
     why: string;
+    whoDescription?: string;
+    whyDescription?: string;
   };
+  
   meaningfulLocation: string;
+  meaningfulLocationDescription?: string;
+  
   treasuredPossession: string;
+  treasuredPossessionDescription?: string;
+  
   trait: string;
+  traitDescription?: string;
 }

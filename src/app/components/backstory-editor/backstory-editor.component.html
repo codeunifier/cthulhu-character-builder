@@ -32,14 +32,25 @@
         
         <mat-form-field class="full-width">
           <mat-label>Select or Enter Ideology</mat-label>
-          <input matInput [(ngModel)]="character.ideology" [matAutocomplete]="autoIdeology" placeholder="Enter or select">
+          <input matInput [(ngModel)]="character.ideology" [matAutocomplete]="autoIdeology" placeholder="Enter or select" (ngModelChange)="updateIdeologyDescription()">
         </mat-form-field>
         
-        <mat-autocomplete #autoIdeology="matAutocomplete">
+        <mat-autocomplete #autoIdeology="matAutocomplete" (optionSelected)="onIdeologySelected($event.option.value)">
           <mat-option *ngFor="let option of ideologyOptions" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        
+        <div class="description-container" *ngIf="character.ideology">
+          <mat-form-field class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput 
+                      [(ngModel)]="character.ideologyDescription" 
+                      placeholder="Enter a description"
+                      (ngModelChange)="updateCustomIdeologyDescription($event)"></textarea>
+            <mat-hint *ngIf="!character.ideologyDescription">Add a description for this ideology</mat-hint>
+          </mat-form-field>
+        </div>
       </mat-card-content>
     </mat-card>
     
@@ -58,25 +69,47 @@
         
         <mat-form-field class="full-width">
           <mat-label>Who</mat-label>
-          <input matInput [(ngModel)]="character.significantPerson.who" [matAutocomplete]="autoWho" placeholder="Enter or select">
+          <input matInput [(ngModel)]="character.significantPerson.who" [matAutocomplete]="autoWho" placeholder="Enter or select" (ngModelChange)="updateSignificantPersonDescription()">
         </mat-form-field>
         
-        <mat-autocomplete #autoWho="matAutocomplete">
+        <mat-autocomplete #autoWho="matAutocomplete" (optionSelected)="onSignificantPersonSelected($event.option.value)">
           <mat-option *ngFor="let option of significantPersons" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
         
+        <div class="description-container" *ngIf="character.significantPerson.who">
+          <mat-form-field class="full-width">
+            <mat-label>Who Description</mat-label>
+            <textarea matInput 
+                      [(ngModel)]="character.significantPerson.whoDescription" 
+                      placeholder="Enter a description"
+                      (ngModelChange)="updateCustomSignificantPersonDescription($event)"></textarea>
+            <mat-hint *ngIf="!character.significantPerson.whoDescription">Add a description for this person</mat-hint>
+          </mat-form-field>
+        </div>
+        
         <mat-form-field class="full-width">
           <mat-label>Why</mat-label>
-          <input matInput [(ngModel)]="character.significantPerson.why" [matAutocomplete]="autoWhy" placeholder="Enter or select">
+          <input matInput [(ngModel)]="character.significantPerson.why" [matAutocomplete]="autoWhy" placeholder="Enter or select" (ngModelChange)="updateSignificantReasonDescription()">
         </mat-form-field>
         
-        <mat-autocomplete #autoWhy="matAutocomplete">
+        <mat-autocomplete #autoWhy="matAutocomplete" (optionSelected)="onSignificantReasonSelected($event.option.value)">
           <mat-option *ngFor="let option of significantReasons" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        
+        <div class="description-container" *ngIf="character.significantPerson.why">
+          <mat-form-field class="full-width">
+            <mat-label>Why Description</mat-label>
+            <textarea matInput 
+                      [(ngModel)]="character.significantPerson.whyDescription" 
+                      placeholder="Enter a description"
+                      (ngModelChange)="updateCustomSignificantReasonDescription($event)"></textarea>
+            <mat-hint *ngIf="!character.significantPerson.whyDescription">Add a description for this relationship</mat-hint>
+          </mat-form-field>
+        </div>
       </mat-card-content>
     </mat-card>
     
@@ -95,14 +128,25 @@
         
         <mat-form-field class="full-width">
           <mat-label>Select or Enter Location</mat-label>
-          <input matInput [(ngModel)]="character.meaningfulLocation" [matAutocomplete]="autoLocation" placeholder="Enter or select">
+          <input matInput [(ngModel)]="character.meaningfulLocation" [matAutocomplete]="autoLocation" placeholder="Enter or select" (ngModelChange)="updateMeaningfulLocationDescription()">
         </mat-form-field>
         
-        <mat-autocomplete #autoLocation="matAutocomplete">
+        <mat-autocomplete #autoLocation="matAutocomplete" (optionSelected)="onMeaningfulLocationSelected($event.option.value)">
           <mat-option *ngFor="let option of meaningfulLocations" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        
+        <div class="description-container" *ngIf="character.meaningfulLocation">
+          <mat-form-field class="full-width">
+            <mat-label>Location Description</mat-label>
+            <textarea matInput 
+                      [(ngModel)]="character.meaningfulLocationDescription" 
+                      placeholder="Enter a description"
+                      (ngModelChange)="updateCustomMeaningfulLocationDescription($event)"></textarea>
+            <mat-hint *ngIf="!character.meaningfulLocationDescription">Add a description for this location</mat-hint>
+          </mat-form-field>
+        </div>
       </mat-card-content>
     </mat-card>
     
@@ -121,14 +165,25 @@
         
         <mat-form-field class="full-width">
           <mat-label>Select or Enter Possession</mat-label>
-          <input matInput [(ngModel)]="character.treasuredPossession" [matAutocomplete]="autoPossession" placeholder="Enter or select">
+          <input matInput [(ngModel)]="character.treasuredPossession" [matAutocomplete]="autoPossession" placeholder="Enter or select" (ngModelChange)="updateTreasuredPossessionDescription()">
         </mat-form-field>
         
-        <mat-autocomplete #autoPossession="matAutocomplete">
+        <mat-autocomplete #autoPossession="matAutocomplete" (optionSelected)="onTreasuredPossessionSelected($event.option.value)">
           <mat-option *ngFor="let option of treasuredPossessions" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        
+        <div class="description-container" *ngIf="character.treasuredPossession">
+          <mat-form-field class="full-width">
+            <mat-label>Possession Description</mat-label>
+            <textarea matInput 
+                      [(ngModel)]="character.treasuredPossessionDescription" 
+                      placeholder="Enter a description"
+                      (ngModelChange)="updateCustomTreasuredPossessionDescription($event)"></textarea>
+            <mat-hint *ngIf="!character.treasuredPossessionDescription">Add a description for this treasured possession</mat-hint>
+          </mat-form-field>
+        </div>
       </mat-card-content>
     </mat-card>
     
@@ -147,14 +202,25 @@
         
         <mat-form-field class="full-width">
           <mat-label>Select or Enter Trait</mat-label>
-          <input matInput [(ngModel)]="character.trait" [matAutocomplete]="autoTrait" placeholder="Enter or select">
+          <input matInput [(ngModel)]="character.trait" [matAutocomplete]="autoTrait" placeholder="Enter or select" (ngModelChange)="updateTraitDescription()">
         </mat-form-field>
         
-        <mat-autocomplete #autoTrait="matAutocomplete">
+        <mat-autocomplete #autoTrait="matAutocomplete" (optionSelected)="onTraitSelected($event.option.value)">
           <mat-option *ngFor="let option of traits" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
+        
+        <div class="description-container" *ngIf="character.trait">
+          <mat-form-field class="full-width">
+            <mat-label>Trait Description</mat-label>
+            <textarea matInput 
+                      [(ngModel)]="character.traitDescription" 
+                      placeholder="Enter a description"
+                      (ngModelChange)="updateCustomTraitDescription($event)"></textarea>
+            <mat-hint *ngIf="!character.traitDescription">Add a description for this trait</mat-hint>
+          </mat-form-field>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

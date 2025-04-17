@@ -1,0 +1,106 @@
+{
+  "who": [
+    {
+      "id": 1,
+      "name": "Parent",
+      "description": "Parent (e.g. mother, father, stepmother)."
+    },
+    {
+      "id": 2,
+      "name": "Grandparent",
+      "description": "Grandparent (e.g. maternal grandmother, paternal grandfather)."
+    },
+    {
+      "id": 3,
+      "name": "Sibling",
+      "description": "Sibling (e.g. brother, half-brother, stepsister)."
+    },
+    {
+      "id": 4,
+      "name": "Child",
+      "description": "Child (son or daughter)."
+    },
+    {
+      "id": 5,
+      "name": "Partner",
+      "description": "Partner (e.g. spouse, fiancé, lover)."
+    },
+    {
+      "id": 6,
+      "name": "Mentor",
+      "description": "Person who taught you your highest occupational skill. Identify the skill and consider who taught you (e.g. a schoolteacher, the person you apprenticed with, your father)."
+    },
+    {
+      "id": 7,
+      "name": "Friend",
+      "description": "Childhood friend (e.g. classmate, neighbor, imaginary friend)."
+    },
+    {
+      "id": 8,
+      "name": "Famous Person",
+      "description": "A famous person. Your idol or hero. You may never have even met (e.g. film star, politician, musician)."
+    },
+    {
+      "id": 9,
+      "name": "Fellow Investigator",
+      "description": "A fellow investigator in your game."
+    },
+    {
+      "id": 10,
+      "name": "NPC",
+      "description": "A non-player character (NPC) in the game."
+    }
+  ],
+  "why": [
+    {
+      "id": 1,
+      "name": "Indebted",
+      "description": "You are indebted to them. How did they help you? (e.g. financially, they protected you through hard times, got you your first job)."
+    },
+    {
+      "id": 2,
+      "name": "Teacher",
+      "description": "They taught you something. What? (e.g. a skill, to love, to be a man)."
+    },
+    {
+      "id": 3,
+      "name": "Meaning",
+      "description": "They give your life meaning. How? (e.g. you aspire to be like them, you seek to be with them, you seek to make them happy)."
+    },
+    {
+      "id": 4,
+      "name": "Wronged",
+      "description": "You wronged them and seek reconciliation. What did you do? (e.g. stole money from them, informed the police about them, refused to help when they were desperate)."
+    },
+    {
+      "id": 5,
+      "name": "Shared Experience",
+      "description": "Shared experience. What? (e.g. you lived through hard times together, you grew up together, you served in the war together)."
+    },
+    {
+      "id": 6,
+      "name": "Prove Yourself",
+      "description": "You seek to prove yourself to them. How? (e.g. by getting a good job, by finding a good spouse, by getting an education)."
+    },
+    {
+      "id": 7,
+      "name": "Idolize",
+      "description": "You idolize them (e.g. for their fame, their beauty, their work)."
+    },
+    {
+      "id": 8,
+      "name": "Regret",
+      "description": "A feeling of regret (e.g. you should have died in their place, you fell out over something you said, you didn't step up and help them when you had the chance)."
+    },
+    {
+      "id": 9,
+      "name": "Better Than",
+      "description": "You wish to prove yourself better than them. What was their flaw? (e.g. lazy, drunk, unloving)."
+    },
+    {
+      "id": 10,
+      "name": "Revenge",
+      "description": "They have crossed you and you seek revenge. For what do you blame them? (e.g. death of a loved one, your financial ruin, marital breakup)."
+    }
+  ]
+}
