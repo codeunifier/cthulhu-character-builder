@@ -450,33 +450,39 @@
         <!-- Ideology/Beliefs -->
         <div class="backstory-box">
           <div class="backstory-title">Ideology/Beliefs</div>
-          <div class="backstory-content">{{ character.ideology }}</div>
+          <div class="backstory-content"><b>{{ character.ideology }}</b>{{ character.ideologyDescription ? ': ' + character.ideologyDescription : '' }}</div>
         </div>
         
         <!-- Significant People -->
         <div class="backstory-box">
           <div class="backstory-title">Significant People</div>
           <div class="backstory-content">
-            {{ character.significantPerson.who }} ({{ character.significantPerson.why }})
+            <b>{{ character.significantPerson.who }} ({{ character.significantPerson.why }})</b>
+            @if (character.significantPerson.whoDescription) {
+              <p>{{ character.significantPerson.whoDescription }}</p>
+            }
+            @if (character.significantPerson.whyDescription) {
+              <p>{{ character.significantPerson.whyDescription }}</p>
+            }
           </div>
         </div>
         
         <!-- Meaningful Locations -->
         <div class="backstory-box">
           <div class="backstory-title">Meaningful Locations</div>
-          <div class="backstory-content">{{ character.meaningfulLocation }}</div>
+          <div class="backstory-content"><b>{{ character.meaningfulLocation }}</b>{{ character.meaningfulLocationDescription ? ': ' + character.meaningfulLocationDescription : '' }}</div>
         </div>
         
         <!-- Treasured Possessions -->
         <div class="backstory-box">
           <div class="backstory-title">Treasured Possessions</div>
-          <div class="backstory-content">{{ character.treasuredPossession }}</div>
+          <div class="backstory-content"><b>{{ character.treasuredPossession }}</b>{{ character.treasuredPossessionDescription ? ': ' + character.treasuredPossessionDescription : '' }}</div>
         </div>
         
         <!-- Traits -->
         <div class="backstory-box">
           <div class="backstory-title">Traits</div>
-          <div class="backstory-content">{{ character.trait }}</div>
+          <div class="backstory-content"><b>{{ character.trait }}</b>{{ character.traitDescription ? ': ' + character.traitDescription : '' }}</div>
         </div>
         
         <!-- Injuries & Scars -->

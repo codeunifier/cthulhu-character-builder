@@ -23,6 +23,18 @@ import {
   TRAITS 
 } from '../../models/constants';
 
+interface ElementConfig {
+  dataSource: any[];
+  characterValue: string;
+  descriptionField: string;
+  setSelectedDescription: (value: string | null) => void;
+  getSelectedDescription: () => string | null;
+}
+
+interface DescriptionElementMap {
+  [element: string]: ElementConfig;
+}
+
 @Component({
   selector: 'app-backstory-editor',
   standalone: true,
@@ -94,256 +106,252 @@ export class BackstoryEditorComponent implements OnInit {
     });
   }
   
+  // Types for backstory elements
+  private descriptionElementMap: DescriptionElementMap = {
+    'ideology': {
+      dataSource: this.ideologyData,
+      characterValue: 'ideology',
+      descriptionField: 'ideologyDescription',
+      setSelectedDescription: (value: string | null) => {
+        this.selectedIdeologyDescription = value;
+      },
+      getSelectedDescription: () => this.selectedIdeologyDescription
+    },
+    'person': {
+      dataSource: this.significantPersonsData,
+      characterValue: 'significantPerson.who',
+      descriptionField: 'significantPerson.whoDescription',
+      setSelectedDescription: (value: string | null) => {
+        this.selectedSignificantPersonDescription = value;
+      },
+      getSelectedDescription: () => this.selectedSignificantPersonDescription
+    },
+    'reason': {
+      dataSource: this.significantReasonsData,
+      characterValue: 'significantPerson.why',
+      descriptionField: 'significantPerson.whyDescription',
+      setSelectedDescription: (value: string | null) => {
+        this.selectedSignificantReasonDescription = value;
+      },
+      getSelectedDescription: () => this.selectedSignificantReasonDescription
+    },
+    'location': {
+      dataSource: this.meaningfulLocationsData,
+      characterValue: 'meaningfulLocation',
+      descriptionField: 'meaningfulLocationDescription',
+      setSelectedDescription: (value: string | null) => {
+        this.selectedMeaningfulLocationDescription = value;
+      },
+      getSelectedDescription: () => this.selectedMeaningfulLocationDescription
+    },
+    'possession': {
+      dataSource: this.treasuredPossessionsData,
+      characterValue: 'treasuredPossession',
+      descriptionField: 'treasuredPossessionDescription',
+      setSelectedDescription: (value: string | null) => {
+        this.selectedTreasuredPossessionDescription = value;
+      },
+      getSelectedDescription: () => this.selectedTreasuredPossessionDescription
+    },
+    'trait': {
+      dataSource: this.traitsData,
+      characterValue: 'trait',
+      descriptionField: 'traitDescription',
+      setSelectedDescription: (value: string | null) => {
+        this.selectedTraitDescription = value;
+      },
+      getSelectedDescription: () => this.selectedTraitDescription
+    }
+  };
+
   // Update all descriptions based on current selections
   updateAllDescriptions(): void {
     if (!this.character) return;
     
-    this.updateIdeologyDescription();
-    this.updateSignificantPersonDescription();
-    this.updateSignificantReasonDescription();
-    this.updateMeaningfulLocationDescription();
-    this.updateTreasuredPossessionDescription();
-    this.updateTraitDescription();
+    this.updateDescription('ideology');
+    this.updateDescription('person');
+    this.updateDescription('reason');
+    this.updateDescription('location');
+    this.updateDescription('possession');
+    this.updateDescription('trait');
   }
   
-  // Methods to update individual descriptions
-  updateIdeologyDescription(): void {
-    if (!this.character.ideology) {
-      this.selectedIdeologyDescription = null;
+  // Get a property via string path notation
+  private getNestedProperty(obj: any, path: string): any {
+    return path.split('.').reduce((prev, curr) => prev && prev[curr], obj);
+  }
+  
+  // Set a property via string path notation
+  private setNestedProperty(obj: any, path: string, value: any): void {
+    const parts = path.split('.');
+    const last = parts.pop();
+    const target = parts.reduce((prev, curr) => {
+      if (!prev[curr]) prev[curr] = {};
+      return prev[curr];
+    }, obj);
+    
+    if (last) {
+      target[last] = value;
+    }
+  }
+  
+  // Generic method to update descriptions
+  updateDescription(elementType: string): void {    
+    // Get the configuration for this element type
+    const config = this.descriptionElementMap[elementType];
+    if (!config) return;
+    
+    // Get the character value for this element
+    const value = this.getNestedProperty(this.character, config.characterValue);
+    if (!value) {
+      config.setSelectedDescription(null);
       return;
     }
     
     // Check if the character already has a custom description
-    if (this.character.ideologyDescription) {
-      this.selectedIdeologyDescription = this.character.ideologyDescription;
+    const existingDescription = this.getNestedProperty(this.character, config.descriptionField);
+    if (existingDescription) {
+      config.setSelectedDescription(existingDescription);
       return;
     }
     
     // Otherwise look for a description in the predefined data
-    const selectedIdeology = this.ideologyData.find(item => item.name === this.character.ideology);
-    this.selectedIdeologyDescription = selectedIdeology?.description || null;
+    const selectedElement = config.dataSource.find((item: any) => item.name === value);
+    const description = selectedElement?.description || null;
+    config.setSelectedDescription(description);
     
     // If a predefined description was found, store it in the character
-    if (this.selectedIdeologyDescription) {
-      this.character.ideologyDescription = this.selectedIdeologyDescription;
+    if (description) {
+      this.setNestedProperty(this.character, config.descriptionField, description);
     }
+  }
+  
+  // Generic method to update custom descriptions
+  updateCustomDescription(elementType: string, description: string): void {    
+    // Get the configuration for this element type
+    const config = this.descriptionElementMap[elementType];
+    if (!config) return;
+    
+    // Update the description in the character
+    this.setNestedProperty(this.character, config.descriptionField, description);
+    
+    // Update the UI display variable
+    config.setSelectedDescription(description);
+    
+    // Save the character
+    this.saveCharacter();
+  }
+  
+  // Specific wrapper methods that call the generic method
+  updateIdeologyDescription(): void {
+    this.updateDescription('ideology');
   }
   
   updateSignificantPersonDescription(): void {
-    if (!this.character.significantPerson?.who) {
-      this.selectedSignificantPersonDescription = null;
-      return;
-    }
-    
-    // Check if the character already has a custom description
-    if (this.character.significantPerson.whoDescription) {
-      this.selectedSignificantPersonDescription = this.character.significantPerson.whoDescription;
-      return;
-    }
-    
-    // Otherwise look for a description in the predefined data
-    const selectedPerson = this.significantPersonsData.find(item => item.name === this.character.significantPerson.who);
-    this.selectedSignificantPersonDescription = selectedPerson?.description || null;
-    
-    // If a predefined description was found, store it in the character
-    if (this.selectedSignificantPersonDescription) {
-      this.character.significantPerson.whoDescription = this.selectedSignificantPersonDescription;
-    }
+    this.updateDescription('person');
   }
   
   updateSignificantReasonDescription(): void {
-    if (!this.character.significantPerson?.why) {
-      this.selectedSignificantReasonDescription = null;
-      return;
-    }
-    
-    // Check if the character already has a custom description
-    if (this.character.significantPerson.whyDescription) {
-      this.selectedSignificantReasonDescription = this.character.significantPerson.whyDescription;
-      return;
-    }
-    
-    // Otherwise look for a description in the predefined data
-    const selectedReason = this.significantReasonsData.find(item => item.name === this.character.significantPerson.why);
-    this.selectedSignificantReasonDescription = selectedReason?.description || null;
-    
-    // If a predefined description was found, store it in the character
-    if (this.selectedSignificantReasonDescription) {
-      this.character.significantPerson.whyDescription = this.selectedSignificantReasonDescription;
-    }
+    this.updateDescription('reason');
   }
   
   updateMeaningfulLocationDescription(): void {
-    if (!this.character.meaningfulLocation) {
-      this.selectedMeaningfulLocationDescription = null;
-      return;
-    }
-    
-    // Check if the character already has a custom description
-    if (this.character.meaningfulLocationDescription) {
-      this.selectedMeaningfulLocationDescription = this.character.meaningfulLocationDescription;
-      return;
-    }
-    
-    // Otherwise look for a description in the predefined data
-    const selectedLocation = this.meaningfulLocationsData.find(item => item.name === this.character.meaningfulLocation);
-    this.selectedMeaningfulLocationDescription = selectedLocation?.description || null;
-    
-    // If a predefined description was found, store it in the character
-    if (this.selectedMeaningfulLocationDescription) {
-      this.character.meaningfulLocationDescription = this.selectedMeaningfulLocationDescription;
-    }
+    this.updateDescription('location');
   }
   
   updateTreasuredPossessionDescription(): void {
-    if (!this.character.treasuredPossession) {
-      this.selectedTreasuredPossessionDescription = null;
-      return;
-    }
-    
-    // Check if the character already has a custom description
-    if (this.character.treasuredPossessionDescription) {
-      this.selectedTreasuredPossessionDescription = this.character.treasuredPossessionDescription;
-      return;
-    }
-    
-    // Otherwise look for a description in the predefined data
-    const selectedPossession = this.treasuredPossessionsData.find(item => item.name === this.character.treasuredPossession);
-    this.selectedTreasuredPossessionDescription = selectedPossession?.description || null;
-    
-    // If a predefined description was found, store it in the character
-    if (this.selectedTreasuredPossessionDescription) {
-      this.character.treasuredPossessionDescription = this.selectedTreasuredPossessionDescription;
-    }
+    this.updateDescription('possession');
   }
   
   updateTraitDescription(): void {
-    if (!this.character.trait) {
-      this.selectedTraitDescription = null;
-      return;
-    }
-    
-    // Check if the character already has a custom description
-    if (this.character.traitDescription) {
-      this.selectedTraitDescription = this.character.traitDescription;
-      return;
-    }
-    
-    // Otherwise look for a description in the predefined data
-    const selectedTrait = this.traitsData.find(item => item.name === this.character.trait);
-    this.selectedTraitDescription = selectedTrait?.description || null;
-    
-    // If a predefined description was found, store it in the character
-    if (this.selectedTraitDescription) {
-      this.character.traitDescription = this.selectedTraitDescription;
-    }
+    this.updateDescription('trait');
   }
   
-  // Methods to update custom descriptions
+  // Wrapper methods for custom description updates
   updateCustomIdeologyDescription(description: string): void {
-    this.character.ideologyDescription = description;
-    this.selectedIdeologyDescription = description;
-    this.saveCharacter();
+    this.updateCustomDescription('ideology', description);
   }
   
   updateCustomSignificantPersonDescription(description: string): void {
-    this.character.significantPerson.whoDescription = description;
-    this.selectedSignificantPersonDescription = description;
-    this.saveCharacter();
+    this.updateCustomDescription('person', description);
   }
   
   updateCustomSignificantReasonDescription(description: string): void {
-    this.character.significantPerson.whyDescription = description;
-    this.selectedSignificantReasonDescription = description;
-    this.saveCharacter();
+    this.updateCustomDescription('reason', description);
   }
   
   updateCustomMeaningfulLocationDescription(description: string): void {
-    this.character.meaningfulLocationDescription = description;
-    this.selectedMeaningfulLocationDescription = description;
-    this.saveCharacter();
+    this.updateCustomDescription('location', description);
   }
   
   updateCustomTreasuredPossessionDescription(description: string): void {
-    this.character.treasuredPossessionDescription = description;
-    this.selectedTreasuredPossessionDescription = description;
-    this.saveCharacter();
+    this.updateCustomDescription('possession', description);
   }
   
   updateCustomTraitDescription(description: string): void {
-    this.character.traitDescription = description;
-    this.selectedTraitDescription = description;
-    this.saveCharacter();
+    this.updateCustomDescription('trait', description);
   }
 
-  randomIdeology(): void {
-    if (!this.character) return;
-    const index = this.diceService.rollDie(this.ideologyOptions.length) - 1;
-    this.character.ideology = this.ideologyOptions[index];
+  // Generic method for generating random selections
+  randomSelection(elementType: string): void {    
+    // Get the configuration for this element type
+    const config = this.descriptionElementMap[elementType];
+    if (!config) return;
+    
+    // Map element types to their corresponding options arrays
+    const getOptionsArray = () => {
+      switch (elementType) {
+        case 'person': return this.significantPersons;
+        case 'reason': return this.significantReasons;
+        case 'ideology': return this.ideologyOptions;
+        case 'location': return this.meaningfulLocations;
+        case 'possession': return this.treasuredPossessions;
+        case 'trait': return this.traits;
+        default: return [];
+      }
+    };
+    
+    const options = getOptionsArray();
+    if (!options || !options.length) return;
+    
+    // Roll for a random index
+    const index = this.diceService.rollDie(options.length) - 1;
+    
+    // Set the value on the character
+    this.setNestedProperty(this.character, config.characterValue, options[index]);
     
     // Clear any custom description
-    this.character.ideologyDescription = undefined;
+    this.setNestedProperty(this.character, config.descriptionField, undefined);
     
     // Update with predefined description
-    this.updateIdeologyDescription();
+    this.updateDescription(elementType);
     this.saveCharacter();
   }
-
-  randomSignificantPerson(): void {
-    if (!this.character) return;
-    const whoIndex = this.diceService.rollDie(this.significantPersons.length) - 1;
-    const whyIndex = this.diceService.rollDie(this.significantReasons.length) - 1;
+  
+  // Special case for significant person which handles both who and why
+  randomSignificantPerson(): void {    
+    // Handle the "who" part
+    this.randomSelection('person');
     
-    this.character.significantPerson.who = this.significantPersons[whoIndex];
-    this.character.significantPerson.why = this.significantReasons[whyIndex];
-    
-    // Clear any custom descriptions
-    this.character.significantPerson.whoDescription = undefined;
-    this.character.significantPerson.whyDescription = undefined;
-    
-    // Update with predefined descriptions
-    this.updateSignificantPersonDescription();
-    this.updateSignificantReasonDescription();
-    this.saveCharacter();
+    // Handle the "why" part separately
+    this.randomSelection('reason');
+  }
+  
+  // Wrapper methods for specific random selections
+  randomIdeology(): void {
+    this.randomSelection('ideology');
   }
 
   randomMeaningfulLocation(): void {
-    if (!this.character) return;
-    const index = this.diceService.rollDie(this.meaningfulLocations.length) - 1;
-    this.character.meaningfulLocation = this.meaningfulLocations[index];
-    
-    // Clear any custom description
-    this.character.meaningfulLocationDescription = undefined;
-    
-    // Update with predefined description
-    this.updateMeaningfulLocationDescription();
-    this.saveCharacter();
+    this.randomSelection('location');
   }
 
   randomTreasuredPossession(): void {
-    if (!this.character) return;
-    const index = this.diceService.rollDie(this.treasuredPossessions.length) - 1;
-    this.character.treasuredPossession = this.treasuredPossessions[index];
-    
-    // Clear any custom description
-    this.character.treasuredPossessionDescription = undefined;
-    
-    // Update with predefined description
-    this.updateTreasuredPossessionDescription();
-    this.saveCharacter();
+    this.randomSelection('possession');
   }
 
   randomTrait(): void {
-    if (!this.character) return;
-    const index = this.diceService.rollDie(this.traits.length) - 1;
-    this.character.trait = this.traits[index];
-    
-    // Clear any custom description
-    this.character.traitDescription = undefined;
-    
-    // Update with predefined description
-    this.updateTraitDescription();
-    this.saveCharacter();
+    this.randomSelection('trait');
   }
 
   randomizeAll(): void {
@@ -354,82 +362,52 @@ export class BackstoryEditorComponent implements OnInit {
     this.randomTrait();
   }
   
-  // Option selection handlers
-  onIdeologySelected(value: string): void {
+  // Generic option selection handler
+  onOptionSelected(elementType: string, value: string): void {    
+    // Get the configuration for this element type
+    const config = this.descriptionElementMap[elementType];
+    if (!config) return;
+    
     // Find the full object with description
-    const selectedIdeology = this.ideologyData.find(item => item.name === value);
-    if (selectedIdeology && selectedIdeology.description) {
+    const selectedItem = config.dataSource.find((item: any) => item.name === value);
+    if (selectedItem && selectedItem.description) {
       // Update the character's description
-      this.character.ideologyDescription = selectedIdeology.description;
-      this.selectedIdeologyDescription = selectedIdeology.description;
+      this.setNestedProperty(this.character, config.descriptionField, selectedItem.description);
+      config.setSelectedDescription(selectedItem.description);
       this.saveCharacter();
     }
+  }
+  
+  // Specific wrapper methods for selection handlers
+  onIdeologySelected(value: string): void {
+    this.onOptionSelected('ideology', value);
   }
   
   onSignificantPersonSelected(value: string): void {
-    // Find the full object with description
-    const selectedPerson = this.significantPersonsData.find(item => item.name === value);
-    if (selectedPerson && selectedPerson.description) {
-      // Update the character's description
-      this.character.significantPerson.whoDescription = selectedPerson.description;
-      this.selectedSignificantPersonDescription = selectedPerson.description;
-      this.saveCharacter();
-    }
+    this.onOptionSelected('person', value);
   }
   
   onSignificantReasonSelected(value: string): void {
-    // Find the full object with description
-    const selectedReason = this.significantReasonsData.find(item => item.name === value);
-    if (selectedReason && selectedReason.description) {
-      // Update the character's description
-      this.character.significantPerson.whyDescription = selectedReason.description;
-      this.selectedSignificantReasonDescription = selectedReason.description;
-      this.saveCharacter();
-    }
+    this.onOptionSelected('reason', value);
   }
   
   onMeaningfulLocationSelected(value: string): void {
-    // Find the full object with description
-    const selectedLocation = this.meaningfulLocationsData.find(item => item.name === value);
-    if (selectedLocation && selectedLocation.description) {
-      // Update the character's description
-      this.character.meaningfulLocationDescription = selectedLocation.description;
-      this.selectedMeaningfulLocationDescription = selectedLocation.description;
-      this.saveCharacter();
-    }
+    this.onOptionSelected('location', value);
   }
   
   onTreasuredPossessionSelected(value: string): void {
-    // Find the full object with description
-    const selectedPossession = this.treasuredPossessionsData.find(item => item.name === value);
-    if (selectedPossession && selectedPossession.description) {
-      // Update the character's description
-      this.character.treasuredPossessionDescription = selectedPossession.description;
-      this.selectedTreasuredPossessionDescription = selectedPossession.description;
-      this.saveCharacter();
-    }
+    this.onOptionSelected('possession', value);
   }
   
   onTraitSelected(value: string): void {
-    // Find the full object with description
-    const selectedTrait = this.traitsData.find(item => item.name === value);
-    if (selectedTrait && selectedTrait.description) {
-      // Update the character's description
-      this.character.traitDescription = selectedTrait.description;
-      this.selectedTraitDescription = selectedTrait.description;
-      this.saveCharacter();
-    }
+    this.onOptionSelected('trait', value);
   }
 
   saveCharacter(): void {
-    if (this.character) {
-      this.characterService.updateCharacter(this.character);
-    }
+    this.characterService.updateCharacter(this.character);
   }
 
-  canContinue(): boolean {
-    if (!this.character) return false;
-    
+  canContinue(): boolean {    
     return !!(
       this.character.ideology &&
       this.character.significantPerson.who &&
