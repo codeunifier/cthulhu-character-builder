@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <h2 mat-dialog-title>Reroll Education</h2>
     <mat-dialog-content>
-      <p>You are about to reroll your Education (EDU) stat. This will also reset any improvement checks associated with Education.</p>
+      <p>You are about to reroll your Education (EDU) stat. This will also reroll any improvement checks associated with Education.</p>
       <p>Are you sure you want to continue?</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">

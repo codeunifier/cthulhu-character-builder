@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ import { Character, PendingDeduction, StatModifier, StatModifiers, Stats } from 
 import { CharacterService } from '../../services/character.service';
 import { DiceService } from '../../services/dice.service';
 import { AgeRangeService, AgeRange } from '../../services/age-range.service';
-import { ConfirmationDialogComponent, StatCardComponent } from './stat-card/stat-card.component';
+import { StatCardComponent } from './stat-card/stat-card.component';
 import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/age-effects-card.component";
 
 @Component({
@@ -38,7 +38,6 @@ import { AgeDeductionInfo, AgeEffectsCardComponent } from "./age-effects-card/ag
     MatTooltipModule,
     MatDialogModule,
     StatCardComponent,
-    ConfirmationDialogComponent,
     AgeEffectsCardComponent
 ],
   templateUrl: './stats-editor.component.html',
@@ -64,8 +63,7 @@ export class StatsEditorComponent implements OnInit {
     private characterService: CharacterService,
     private diceService: DiceService,
     private ageRangeService: AgeRangeService,
-    private router: Router,
-    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     // Get age ranges from service
     this.ageRanges = this.ageRangeService.getAllAgeRanges().map(range => ({
@@ -81,7 +79,6 @@ export class StatsEditorComponent implements OnInit {
       this.character = character!;
       this.initializeAgeRange();
       this.initForm();
-      this.cdr.detectChanges();
     });
   }
 
