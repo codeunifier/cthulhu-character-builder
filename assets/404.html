@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Call of Cthulhu Character Builder</title>
+  <script type="text/javascript">
+    // Redirect to the root with the current path added as a hash fragment
+    var segmentCount = 1; // Number of segments in your GitHub Pages URL (username.github.io/repo-name/ = 1)
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/#/' +
+      l.pathname.slice(1).split('/').slice(segmentCount).join('/') +
+      (l.search ? l.search : '') +
+      (l.hash ? l.hash : '')
+    );
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, please click <a href="/">here</a>.</p>
+</body>
+</html>

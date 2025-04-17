@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Generous",
+    "description": "Generous (e.g. generous tipper, always helps out a person in need, philanthropist)."
+  },
+  {
+    "id": 2,
+    "name": "Animal Lover",
+    "description": "Good with animals (e.g. loves cats, grew up on a farm, good with horses)."
+  },
+  {
+    "id": 3,
+    "name": "Dreamer",
+    "description": "Dreamer (e.g. given to flights of fancy, visionary, highly creative)."
+  },
+  {
+    "id": 4,
+    "name": "Hedonist",
+    "description": "Hedonist (e.g. life and soul of the party, entertaining drunk, \"live fast and die young\")."
+  },
+  {
+    "id": 5,
+    "name": "Risk-taker",
+    "description": "Gambler and a risk-taker (e.g. poker-faced, try anything once, lives on the edge)."
+  },
+  {
+    "id": 6,
+    "name": "Good Cook",
+    "description": "Good cook (e.g. bakes wonderful cakes, can make a meal from almost nothing, refined palate)."
+  },
+  {
+    "id": 7,
+    "name": "Charming",
+    "description": "Ladies' man/seductress (e.g. suave, charming voice, enchanting eyes)."
+  },
+  {
+    "id": 8,
+    "name": "Loyal",
+    "description": "Loyal (e.g. stands by his or her friends, never breaks a promise, would die for his or her beliefs)."
+  },
+  {
+    "id": 9,
+    "name": "Reputable",
+    "description": "A good reputation (e.g. the best after-dinner speaker in the country, the most pious of men, fearless in the face of danger)."
+  },
+  {
+    "id": 10,
+    "name": "Ambitious",
+    "description": "Ambitious (e.g. to achieve a goal, to become the boss, to have it all)."
+  }
+]

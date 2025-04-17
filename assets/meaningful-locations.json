@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Learning",
+    "description": "Your seat of learning (e.g. school, university)."
+  },
+  {
+    "id": 2,
+    "name": "Hometown",
+    "description": "Your hometown (e.g. rural village, market town, busy city)."
+  },
+  {
+    "id": 3,
+    "name": "First Love",
+    "description": "The place you met your first love (e.g. a music concert, on holiday, a bomb shelter)."
+  },
+  {
+    "id": 4,
+    "name": "Contemplation",
+    "description": "A place for quiet contemplation (e.g. the library, country walks on your estate, fishing)."
+  },
+  {
+    "id": 5,
+    "name": "Social",
+    "description": "A place for socializing (e.g. gentlemen's club, local bar, uncle's house)."
+  },
+  {
+    "id": 6,
+    "name": "Belief",
+    "description": "A place connected with your ideology/belief (e.g. parish church, Mecca, Stonehenge)."
+  },
+  {
+    "id": 7,
+    "name": "Grave",
+    "description": "The grave of a significant person. Who? (e.g. a parent, a child, a lover)."
+  },
+  {
+    "id": 8,
+    "name": "Home",
+    "description": "Your family home (e.g. a country estate, a rented flat, the orphanage in which you were raised)."
+  },
+  {
+    "id": 9,
+    "name": "Happy Place",
+    "description": "The place you were happiest in your life (e.g. the park bench where you first kissed, your university)."
+  },
+  {
+    "id": 10,
+    "name": "Workplace",
+    "description": "Your workplace (e.g. the office, library, bank)."
+  }
+]
